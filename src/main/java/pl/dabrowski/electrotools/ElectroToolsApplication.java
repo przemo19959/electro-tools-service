@@ -53,6 +53,7 @@ public class ElectroToolsApplication {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .cors(withDefaults())
+        .csrf().disable()
         .authorizeRequests()
 //        .antMatchers("/projects/page").permitAll()
         .anyRequest().hasRole("ADMIN")
