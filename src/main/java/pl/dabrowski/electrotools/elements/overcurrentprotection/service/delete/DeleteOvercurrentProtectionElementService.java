@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.repository.OvercurrentProtectionElementRepository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -16,5 +17,9 @@ public class DeleteOvercurrentProtectionElementService {
 
   public void deleteById(UUID overcurrentProtectionElementId) {
     overcurrentProtectionElementRepository.deleteById(overcurrentProtectionElementId);
+  }
+
+  public void deleteAllByIdsIn(List<UUID> ids) {
+    overcurrentProtectionElementRepository.deleteAll(overcurrentProtectionElementRepository.findAllById(ids));
   }
 }

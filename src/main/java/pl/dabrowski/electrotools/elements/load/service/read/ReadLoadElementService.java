@@ -14,11 +14,10 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ReadLoadElementService {
-
     private final LoadElementRepository loadElementRepository;
 
-    public List<ReadLoadElementDto> findAll() {
-        return loadElementRepository.findAll().stream().map(LoadElement::toDto).toList();
+    public List<ReadLoadElementDto> findAll(UUID projectId) {
+        return loadElementRepository.findAllByProjectId(projectId).stream().map(LoadElement::toDto).toList();
     }
 
     public Page<ReadLoadElementDto> pageAll(Pageable pageable) {

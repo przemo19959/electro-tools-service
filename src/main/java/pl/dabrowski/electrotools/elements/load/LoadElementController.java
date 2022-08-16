@@ -21,18 +21,14 @@ import java.util.UUID;
 @RequestMapping("/loadElements")
 @RequiredArgsConstructor
 public class LoadElementController {
-
     private final ReadLoadElementService readLoadElementService;
-
     private final CreateLoadElementService createLoadElementService;
-
     private final UpdateLoadElementService updateLoadElementService;
-
     private final DeleteLoadElementService deleteLoadElementService;
 
     @GetMapping
-    public ResponseEntity<List<ReadLoadElementDto>> findAll() {
-        return ResponseEntity.ok(readLoadElementService.findAll());
+    public ResponseEntity<List<ReadLoadElementDto>> findAll(@RequestParam UUID projectId) {
+        return ResponseEntity.ok(readLoadElementService.findAll(projectId));
     }
 
     @GetMapping("/page")
