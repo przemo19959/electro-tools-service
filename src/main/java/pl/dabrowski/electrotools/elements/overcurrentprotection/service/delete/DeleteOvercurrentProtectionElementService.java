@@ -12,7 +12,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Transactional
 public class DeleteOvercurrentProtectionElementService {
-
   private final OvercurrentProtectionElementRepository overcurrentProtectionElementRepository;
 
   public void deleteById(UUID overcurrentProtectionElementId) {

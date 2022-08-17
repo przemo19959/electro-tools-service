@@ -1,12 +1,12 @@
 package pl.dabrowski.electrotools.elements.basic;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import pl.dabrowski.electrotools.elements.basic.service.delete.DeleteBasicElementService;
+import pl.dabrowski.electrotools.elements.load.service.read.ReadLoadElementDto;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +15,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BasicElementController {
   private final DeleteBasicElementService deleteBasicElementService;
+
+  @GetMapping
+  public ResponseEntity<List<ReadLoadElementDto>> findAll(@RequestParam UUID projectId) {
+    return ResponseEntity.ok(Collections.emptyList());
+  }
 
   @PostMapping
   public void remove(@RequestBody List<UUID> ids) {
