@@ -1,19 +1,16 @@
 package pl.dabrowski.electrotools.elements.overcurrentprotection.service.create;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import pl.dabrowski.electrotools.elements.basic.service.create.CreateBasicElementDto;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.OvercurrentProtectionType;
 
-import java.util.UUID;
-
 @Getter
-@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class CreateOvercurrentProtectionElementDto {
-    private double x;
-    private double y;
-    private String label;
-    private OvercurrentProtectionType type;
-    private int amperage;
-    private UUID projectId;
+public class CreateOvercurrentProtectionElementDto extends CreateBasicElementDto {
+  private OvercurrentProtectionType type;
+  private int amperage;
 }

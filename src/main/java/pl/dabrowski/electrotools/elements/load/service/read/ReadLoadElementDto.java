@@ -2,18 +2,13 @@ package pl.dabrowski.electrotools.elements.load.service.read;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-
-import java.util.UUID;
+import lombok.experimental.SuperBuilder;
+import pl.dabrowski.electrotools.elements.basic.service.read.ReadBasicElementDto;
 
 @Getter
-@Builder
+@SuperBuilder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ReadLoadElementDto {
-  private final UUID id;
-  private final double x;
-  private final double y;
-  private final String label;
+public class ReadLoadElementDto extends ReadBasicElementDto {
   private final double drawPower;
 }

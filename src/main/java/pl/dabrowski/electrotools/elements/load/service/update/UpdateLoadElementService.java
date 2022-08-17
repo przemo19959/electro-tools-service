@@ -13,10 +13,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Transactional
 public class UpdateLoadElementService {
-
   private final LoadElementRepository loadElementRepository;
 
   public LoadElement update(UUID loadElementId, UpdateLoadElementDto dto) {
-    return loadElementRepository.findById(loadElementId).map(v -> v.update(dto)).map(loadElementRepository::save).orElseThrow(() -> new NoSuchElementException("No LoadElement with id: " + loadElementId + ""));
+    return loadElementRepository.findById(loadElementId)
+        .map(v -> v.update(dto))
+        .map(loadElementRepository::save)
+        .orElseThrow(() -> new NoSuchElementException("No LoadElement with id: " + loadElementId + ""));
   }
 }

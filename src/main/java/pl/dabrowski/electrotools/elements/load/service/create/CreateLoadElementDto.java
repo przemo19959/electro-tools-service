@@ -1,17 +1,14 @@
 package pl.dabrowski.electrotools.elements.load.service.create;
 
-import lombok.*;
-
-import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import pl.dabrowski.electrotools.elements.basic.service.create.CreateBasicElementDto;
 
 @Getter
-@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class CreateLoadElementDto {
-    private double x;
-    private double y;
-    private String label;
+public class CreateLoadElementDto extends CreateBasicElementDto {
     private double drawPower;
-    private UUID projectId;
 }

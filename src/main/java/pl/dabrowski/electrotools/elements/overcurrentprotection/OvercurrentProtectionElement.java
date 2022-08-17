@@ -3,7 +3,7 @@ package pl.dabrowski.electrotools.elements.overcurrentprotection;
 import lombok.Getter;
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import pl.dabrowski.electrotools.elements.basic.BasicElement;
+import pl.dabrowski.electrotools.elements.basic.AbstractBasicElement;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.service.create.CreateOvercurrentProtectionElementDto;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.service.read.ReadOvercurrentProtectionElementDto;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.service.update.UpdateOvercurrentProtectionElementDto;
@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "t_overcurrent_protection_elements")
 @EntityListeners(value = AuditingEntityListener.class)
 @Audited
-public class OvercurrentProtectionElement extends BasicElement {
+public class OvercurrentProtectionElement extends AbstractBasicElement {
     @NotNull
     @Column(name = "type")
     @Enumerated(EnumType.STRING)

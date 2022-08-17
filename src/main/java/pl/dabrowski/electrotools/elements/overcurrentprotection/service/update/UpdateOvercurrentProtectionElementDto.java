@@ -1,16 +1,16 @@
 package pl.dabrowski.electrotools.elements.overcurrentprotection.service.update;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import pl.dabrowski.electrotools.elements.basic.service.update.UpdateBasicElementDto;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.OvercurrentProtectionType;
 
 @Getter
-@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class UpdateOvercurrentProtectionElementDto {
-  private double x;
-  private double y;
-  private String label;
+public class UpdateOvercurrentProtectionElementDto extends UpdateBasicElementDto {
   private OvercurrentProtectionType type;
   private int amperage;
 }

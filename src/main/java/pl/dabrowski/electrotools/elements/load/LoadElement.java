@@ -3,7 +3,7 @@ package pl.dabrowski.electrotools.elements.load;
 import lombok.Getter;
 import org.hibernate.envers.Audited;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import pl.dabrowski.electrotools.elements.basic.BasicElement;
+import pl.dabrowski.electrotools.elements.basic.AbstractBasicElement;
 import pl.dabrowski.electrotools.elements.load.service.create.CreateLoadElementDto;
 import pl.dabrowski.electrotools.elements.load.service.read.ReadLoadElementDto;
 import pl.dabrowski.electrotools.elements.load.service.update.UpdateLoadElementDto;
@@ -19,7 +19,7 @@ import javax.persistence.Table;
 @Table(name = "t_load_elements")
 @EntityListeners(value = AuditingEntityListener.class)
 @Audited
-public class LoadElement extends BasicElement {
+public class LoadElement extends AbstractBasicElement {
   @Column(name = "draw_power")
   private double drawPower;
 

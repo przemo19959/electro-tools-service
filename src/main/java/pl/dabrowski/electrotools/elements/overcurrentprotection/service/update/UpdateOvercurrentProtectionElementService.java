@@ -13,10 +13,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Transactional
 public class UpdateOvercurrentProtectionElementService {
-
   private final OvercurrentProtectionElementRepository overcurrentProtectionElementRepository;
 
   public OvercurrentProtectionElement update(UUID overcurrentProtectionElementId, UpdateOvercurrentProtectionElementDto dto) {
-    return overcurrentProtectionElementRepository.findById(overcurrentProtectionElementId).map(v -> v.update(dto)).map(overcurrentProtectionElementRepository::save).orElseThrow(() -> new NoSuchElementException("No OvercurrentProtectionElement with id: " + overcurrentProtectionElementId + ""));
+    return overcurrentProtectionElementRepository.findById(overcurrentProtectionElementId)
+        .map(v -> v.update(dto))
+        .map(overcurrentProtectionElementRepository::save)
+        .orElseThrow(() -> new NoSuchElementException("No OvercurrentProtectionElement with id: " + overcurrentProtectionElementId + ""));
   }
 }

@@ -1,52 +1,45 @@
 package pl.dabrowski.electrotools.elements.basic;
 
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
+import lombok.Getter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import pl.dabrowski.electrotools.elements.basic.service.create.CreateBasicElementDto;
+import pl.dabrowski.electrotools.elements.basic.service.read.ReadBasicElementDto;
+import pl.dabrowski.electrotools.elements.basic.service.update.UpdateBasicElementDto;
 import pl.dabrowski.electrotools.project.Project;
 
-import javax.persistence.*;
-import java.time.Instant;
-import java.util.UUID;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.Table;
 
-@MappedSuperclass
-public class BasicElement {
-  @Id
-  @GeneratedValue
-  @Column(name = "id")
-  protected UUID id;
+@Entity
+@Getter
+@Table(name = "t_basic_elements")
+@EntityListeners(value = AuditingEntityListener.class)
+public class BasicElement extends AbstractBasicElement {
+  public static BasicElement create(CreateBasicElementDto dto, Project project) {
+    BasicElement basicElement = new BasicElement();
+    basicElement.x = dto.getX();
+    basicElement.y = dto.getY();
+    basicElement.label = dto.getLabel();
+    basicElement.project = project;
 
-  @Column(name = "x")
-  protected double x;
+    return basicElement;
+  }
 
-  @Column(name = "y")
-  protected double y;
+  public BasicElement update(UpdateBasicElementDto dto) {
+    this.x = dto.getX();
+    this.y = dto.getY();
+    this.label = dto.getLabel();
 
-  @Column(name = "label")
-  protected String label;
+    return this;
+  }
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "project_id")
-  protected Project project;
-
-  @Version
-  @Column(name = "version")
-  private Integer version;
-
-  @CreatedBy
-  @Column(name = "created_by", updatable = false)
-  private String createdBy;
-
-  @CreatedDate
-  @Column(name = "created_date", updatable = false)
-  private Instant createdDate;
-
-  @LastModifiedBy
-  @Column(name = "modified_by")
-  private String modifiedBy;
-
-  @LastModifiedDate
-  @Column(name = "modified_date")
-  private Instant modifiedDate;
+  public ReadBasicElementDto toDto() {
+    return ReadBasicElementDto.builder()
+        .id(id)
+        .x(x)
+        .y(y)
+        .label(label)
+        .build();
+  }
 }

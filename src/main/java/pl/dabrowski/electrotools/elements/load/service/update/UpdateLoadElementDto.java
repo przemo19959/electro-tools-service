@@ -1,18 +1,14 @@
 package pl.dabrowski.electrotools.elements.load.service.update;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import pl.dabrowski.electrotools.elements.basic.service.update.UpdateBasicElementDto;
 
 @Getter
-@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class UpdateLoadElementDto {
-
-  private double x;
-
-  private double y;
-
-  private String label;
-
+public class UpdateLoadElementDto extends UpdateBasicElementDto {
   private double drawPower;
 }
