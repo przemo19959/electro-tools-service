@@ -27,8 +27,11 @@ public class Connection {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "element_id")
-    private UUID elementId;
+    @Column(name = "from_element_id")
+    private UUID fromElementId;
+
+    @Column(name = "to_element_id")
+    private UUID toElementId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "wire_id")
@@ -56,7 +59,8 @@ public class Connection {
 
     public static Connection create(CreateConnectionDto dto, Wire wire) {
         final Connection connection = new Connection();
-        connection.elementId = dto.getElementId();
+        connection.fromElementId = dto.getFromElementId();
+        connection.toElementId = dto.getToElementId();
         connection.wire = wire;
 
         return connection;

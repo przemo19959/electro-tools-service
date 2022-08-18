@@ -9,5 +9,6 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 public class CreateConnectionDto {
-  private UUID elementId;
+  private UUID fromElementId;
+  private UUID toElementId;
 }
