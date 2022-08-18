@@ -21,13 +21,9 @@ import java.util.UUID;
 @RequestMapping("/wires")
 @RequiredArgsConstructor
 public class WireController {
-
   private final ReadWireService readWireService;
-
   private final CreateWireService createWireService;
-
   private final UpdateWireService updateWireService;
-
   private final DeleteWireService deleteWireService;
 
   @GetMapping
@@ -50,9 +46,9 @@ public class WireController {
     return ResponseEntity.status(HttpStatus.CREATED).body(createWireService.create(dto).toDto());
   }
 
-  @PutMapping("/{wireId}")
-  public ResponseEntity<ReadWireDto> update(@PathVariable UUID wireId, @RequestBody UpdateWireDto dto) {
-    return ResponseEntity.ok(updateWireService.update(wireId, dto).toDto());
+  @PutMapping
+  public ResponseEntity<ReadWireDto> update(@RequestBody UpdateWireDto dto) {
+    return ResponseEntity.ok(updateWireService.update(dto).toDto());
   }
 
   @DeleteMapping("/{wireId}")

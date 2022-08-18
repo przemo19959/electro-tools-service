@@ -13,5 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReadConnectionDto {
   private final UUID id;
+  private final UUID fromElementId;
+  private final UUID toElementId;
   private final ReadWireDto wire;
 }

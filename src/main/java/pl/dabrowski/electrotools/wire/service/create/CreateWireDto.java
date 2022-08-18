@@ -8,14 +8,9 @@ import pl.dabrowski.electrotools.wire.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 public class CreateWireDto {
-
   private WireDiameter diameter;
-
   private WireSymbol symbol;
-
   private PlacementType placement;
-
   private WireType type;
-
   private PhaseType phase;
 }

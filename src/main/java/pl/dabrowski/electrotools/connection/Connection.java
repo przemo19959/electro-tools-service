@@ -2,18 +2,14 @@ package pl.dabrowski.electrotools.connection;
 
 import lombok.Getter;
 import org.hibernate.envers.Audited;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import pl.dabrowski.electrotools.AbstractAuditedEntity;
 import pl.dabrowski.electrotools.connection.service.create.CreateConnectionDto;
 import pl.dabrowski.electrotools.connection.service.read.ReadConnectionDto;
 import pl.dabrowski.electrotools.connection.service.update.UpdateConnectionDto;
 import pl.dabrowski.electrotools.wire.Wire;
 
 import javax.persistence.*;
-import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -21,62 +17,45 @@ import java.util.UUID;
 @Table(name = "t_connections")
 @EntityListeners(value = AuditingEntityListener.class)
 @Audited
-public class Connection {
-    @Id
-    @GeneratedValue
-    @Column(name = "id")
-    private UUID id;
+public class Connection extends AbstractAuditedEntity {
+  @Id
+  @GeneratedValue
+  @Column(name = "id")
+  private UUID id;
 
-    @Column(name = "from_element_id")
-    private UUID fromElementId;
+  @Column(name = "from_element_id")
+  private UUID fromElementId;
 
-    @Column(name = "to_element_id")
-    private UUID toElementId;
+  @Column(name = "to_element_id")
+  private UUID toElementId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "wire_id")
-    private Wire wire;
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "wire_id")
+  private Wire wire;
 
-    @Version
-    @Column(name = "version")
-    private Integer version;
+  public static Connection create(CreateConnectionDto dto, Wire wire) {
+    final Connection connection = new Connection();
+    connection.fromElementId = dto.getFromElementId();
+    connection.toElementId = dto.getToElementId();
+    connection.wire = wire;
 
-    @CreatedBy
-    @Column(name = "created_by", updatable = false)
-    private String createdBy;
+    return connection;
+  }
 
-    @CreatedDate
-    @Column(name = "created_date", updatable = false)
-    private Instant createdDate;
+  public Connection update(UpdateConnectionDto dto, Wire wire) {
+    this.fromElementId = dto.getFromElementId();
+    this.toElementId = dto.getToElementId();
+    this.wire = wire;
 
-    @LastModifiedBy
-    @Column(name = "modified_by")
-    private String modifiedBy;
+    return this;
+  }
 
-    @LastModifiedDate
-    @Column(name = "modified_date")
-    private Instant modifiedDate;
-
-    public static Connection create(CreateConnectionDto dto, Wire wire) {
-        final Connection connection = new Connection();
-        connection.fromElementId = dto.getFromElementId();
-        connection.toElementId = dto.getToElementId();
-        connection.wire = wire;
-
-        return connection;
-    }
-
-    public Connection update(UpdateConnectionDto dto, Wire wire) {
-        this.wire = wire;
-
-
-        return this;
-    }
-
-    public ReadConnectionDto toDto() {
-        return ReadConnectionDto.builder()
-            .id(id)
-            .wire(wire.toDto())
-            .build();
-    }
+  public ReadConnectionDto toDto() {
+    return ReadConnectionDto.builder()
+        .id(id)
+        .fromElementId(fromElementId)
+        .toElementId(toElementId)
+        .wire(wire.toDto())
+        .build();
+  }
 }
