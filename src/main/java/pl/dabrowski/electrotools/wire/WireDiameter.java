@@ -1,5 +1,7 @@
 package pl.dabrowski.electrotools.wire;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -22,5 +24,16 @@ public enum WireDiameter {
   D_950(95),
   D_1200(120);
 
+  @JsonValue
   private final double value;
+
+  @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+  public static WireDiameter fromValue(double value) {
+    for (WireDiameter b : WireDiameter.values()) {
+      if (b.value == value) {
+        return b;
+      }
+    }
+    return null;
+  }
 }

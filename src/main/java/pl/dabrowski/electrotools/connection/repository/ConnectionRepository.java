@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface ConnectionRepository extends JpaRepository<Connection, UUID> {
   @Query(nativeQuery = true, value = "select * from t_connections tc " +
-      "where tc.from_element_id in (:elementIds) " +
-      "or tc.to_element_id in (:elementIds)")
+      "where cast(tc.from_element_id as varchar ) in (:elementIds) " +
+      "or cast(tc.to_element_id as varchar ) in (:elementIds)")
   List<Connection> findAllByElementIdsIn(List<String> elementIds);
 }

@@ -24,7 +24,7 @@ public class ConnectionController {
   private final UpdateConnectionService updateConnectionService;
   private final DeleteConnectionService deleteConnectionService;
 
-  @GetMapping
+  @PostMapping
   public ResponseEntity<List<ReadConnectionDto>> findAll(@RequestBody List<String> elementIds) {
     return ResponseEntity.ok(readConnectionService.findAll(elementIds));
   }
@@ -39,7 +39,7 @@ public class ConnectionController {
 //        return ResponseEntity.ok(readConnectionService.findById(connectionId));
 //    }
 
-  @PostMapping
+  @PostMapping("/create")
   public ResponseEntity<List<ReadConnectionDto>> create(@RequestBody List<CreateConnectionDto> dtos) {
     return ResponseEntity.status(HttpStatus.CREATED).body(createConnectionService.create(dtos)
         .stream()
@@ -52,9 +52,9 @@ public class ConnectionController {
     return ResponseEntity.ok(updateConnectionService.update(dtos).stream().map(Connection::toDto).toList());
   }
 
-  @DeleteMapping("/{connectionId}")
-  public ResponseEntity<Void> deleteById(@PathVariable UUID connectionId) {
-    deleteConnectionService.deleteById(connectionId);
+  @PostMapping("/remove")
+  public ResponseEntity<Void> deleteById(@RequestBody List<UUID> connectionIds) {
+    deleteConnectionService.deleteAllById(connectionIds);
     return ResponseEntity.ok().build();
   }
 }
