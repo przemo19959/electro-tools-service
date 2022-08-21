@@ -11,4 +11,5 @@ import pl.dabrowski.electrotools.elements.basic.service.create.CreateBasicElemen
 @NoArgsConstructor
 public class CreateLoadElementDto extends CreateBasicElementDto {
     private double drawPower;
+    private double powerFactor;
 }

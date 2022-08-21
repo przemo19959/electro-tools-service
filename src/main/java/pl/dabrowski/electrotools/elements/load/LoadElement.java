@@ -23,13 +23,17 @@ public class LoadElement extends AbstractBasicElement {
   @Column(name = "draw_power")
   private double drawPower;
 
+  @Column(name = "power_factor")
+  private double powerFactor = 1;
+
   public static LoadElement create(CreateLoadElementDto dto, Project project) {
     final LoadElement loadElement = new LoadElement();
     loadElement.x = dto.getX();
     loadElement.y = dto.getY();
     loadElement.label = dto.getLabel();
-    loadElement.drawPower = dto.getDrawPower();
     loadElement.project = project;
+    loadElement.drawPower = dto.getDrawPower();
+    loadElement.powerFactor = dto.getPowerFactor();
 
     return loadElement;
   }
@@ -39,6 +43,8 @@ public class LoadElement extends AbstractBasicElement {
     this.y = dto.getY();
     this.label = dto.getLabel();
     this.drawPower = dto.getDrawPower();
+    this.powerFactor = dto.getPowerFactor();
+
     return this;
   }
 
@@ -49,6 +55,7 @@ public class LoadElement extends AbstractBasicElement {
         .y(y)
         .label(label)
         .drawPower(drawPower)
+        .powerFactor(powerFactor)
         .build();
   }
 }

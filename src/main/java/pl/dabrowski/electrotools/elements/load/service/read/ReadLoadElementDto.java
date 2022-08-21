@@ -11,4 +11,5 @@ import pl.dabrowski.electrotools.elements.basic.service.read.ReadBasicElementDto
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReadLoadElementDto extends ReadBasicElementDto {
   private final double drawPower;
+  private final double powerFactor;
 }
