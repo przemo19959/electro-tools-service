@@ -12,16 +12,11 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReadWireDto {
-
   private final UUID id;
-
   private final WireDiameter diameter;
-
   private final WireSymbol symbol;
-
   private final PlacementType placement;
-
   private final WireType type;
-
   private final PhaseType phase;
+  private final Double length;
 }

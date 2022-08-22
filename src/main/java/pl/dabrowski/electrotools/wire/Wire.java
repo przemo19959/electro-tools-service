@@ -2,17 +2,14 @@ package pl.dabrowski.electrotools.wire;
 
 import lombok.Getter;
 import org.hibernate.envers.Audited;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import pl.dabrowski.electrotools.AbstractAuditedEntity;
 import pl.dabrowski.electrotools.wire.service.create.CreateWireDto;
 import pl.dabrowski.electrotools.wire.service.read.ReadWireDto;
 import pl.dabrowski.electrotools.wire.service.update.UpdateWireDto;
 
 import javax.persistence.*;
-import java.time.Instant;
+import javax.validation.constraints.Positive;
 import java.util.UUID;
 
 @Entity
@@ -20,7 +17,7 @@ import java.util.UUID;
 @Table(name = "t_wires")
 @EntityListeners(value = AuditingEntityListener.class)
 @Audited
-public class Wire {
+public class Wire extends AbstractAuditedEntity {
     @Id
     @GeneratedValue
     @Column(name = "id")
@@ -46,25 +43,9 @@ public class Wire {
     @Column(name = "phase")
     private PhaseType phase;
 
-    @Version
-    @Column(name = "version")
-    private Integer version;
-
-    @CreatedBy
-    @Column(name = "created_by", updatable = false)
-    private String createdBy;
-
-    @CreatedDate
-    @Column(name = "created_date", updatable = false)
-    private Instant createdDate;
-
-    @LastModifiedBy
-    @Column(name = "modified_by")
-    private String modifiedBy;
-
-    @LastModifiedDate
-    @Column(name = "modified_date")
-    private Instant modifiedDate;
+    @Positive
+    @Column(name = "length")
+    private Double length = 5.0;
 
     public static Wire create(CreateWireDto dto) {
         final Wire wire = new Wire();
@@ -73,6 +54,8 @@ public class Wire {
         wire.placement = dto.getPlacement();
         wire.type = dto.getType();
         wire.phase = dto.getPhase();
+        wire.length = dto.getLength();
+
         return wire;
     }
 
@@ -82,10 +65,20 @@ public class Wire {
         this.placement = dto.getPlacement();
         this.type = dto.getType();
         this.phase = dto.getPhase();
+        this.length = dto.getLength();
+
         return this;
     }
 
     public ReadWireDto toDto() {
-        return ReadWireDto.builder().id(id).diameter(diameter).symbol(symbol).placement(placement).type(type).phase(phase).build();
+        return ReadWireDto.builder()
+            .id(id)
+            .diameter(diameter)
+            .symbol(symbol)
+            .placement(placement)
+            .type(type)
+            .phase(phase)
+            .length(length)
+            .build();
     }
 }

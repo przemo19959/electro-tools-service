@@ -16,4 +16,5 @@ public class UpdateWireDto {
   private PlacementType placement;
   private WireType type;
   private PhaseType phase;
+  private double length;
 }
