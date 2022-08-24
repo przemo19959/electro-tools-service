@@ -12,4 +12,5 @@ import pl.dabrowski.electrotools.elements.basic.service.create.CreateBasicElemen
 public class CreateLoadElementDto extends CreateBasicElementDto {
     private double drawPower;
     private double powerFactor;
+    private boolean highStartCurrent;
 }

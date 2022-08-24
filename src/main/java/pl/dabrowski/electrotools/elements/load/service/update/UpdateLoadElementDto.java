@@ -12,4 +12,5 @@ import pl.dabrowski.electrotools.elements.basic.service.update.UpdateBasicElemen
 public class UpdateLoadElementDto extends UpdateBasicElementDto {
   private double drawPower;
   private double powerFactor;
+  private boolean highStartCurrent;
 }

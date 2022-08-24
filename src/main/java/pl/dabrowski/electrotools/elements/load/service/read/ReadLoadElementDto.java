@@ -12,4 +12,5 @@ import pl.dabrowski.electrotools.elements.basic.service.read.ReadBasicElementDto
 public class ReadLoadElementDto extends ReadBasicElementDto {
   private final double drawPower;
   private final double powerFactor;
+  private final Boolean highStartCurrent;
 }

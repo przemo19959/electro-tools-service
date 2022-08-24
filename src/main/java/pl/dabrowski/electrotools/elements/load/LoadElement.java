@@ -26,6 +26,9 @@ public class LoadElement extends AbstractBasicElement {
   @Column(name = "power_factor")
   private double powerFactor = 1;
 
+  @Column(name = "high_start_current")
+  private Boolean highStartCurrent;
+
   public static LoadElement create(CreateLoadElementDto dto, Project project) {
     final LoadElement loadElement = new LoadElement();
     loadElement.x = dto.getX();
@@ -34,6 +37,7 @@ public class LoadElement extends AbstractBasicElement {
     loadElement.project = project;
     loadElement.drawPower = dto.getDrawPower();
     loadElement.powerFactor = dto.getPowerFactor();
+    loadElement.highStartCurrent = dto.isHighStartCurrent();
 
     return loadElement;
   }
@@ -44,6 +48,7 @@ public class LoadElement extends AbstractBasicElement {
     this.label = dto.getLabel();
     this.drawPower = dto.getDrawPower();
     this.powerFactor = dto.getPowerFactor();
+    this.highStartCurrent = dto.isHighStartCurrent();
 
     return this;
   }
@@ -56,6 +61,7 @@ public class LoadElement extends AbstractBasicElement {
         .label(label)
         .drawPower(drawPower)
         .powerFactor(powerFactor)
+        .highStartCurrent(highStartCurrent)
         .build();
   }
 }
