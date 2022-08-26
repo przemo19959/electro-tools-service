@@ -6,6 +6,7 @@ import pl.dabrowski.electrotools.connection.repository.ConnectionRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -16,5 +17,13 @@ public class DeleteConnectionService {
 
   public void deleteAllById(List<UUID> connectionIds) {
     connectionRepository.deleteAllById(connectionIds);
+  }
+
+  public void deleteAllByElementIdIn(List<UUID> ids) {
+    List<String> elementIds = ids.stream()
+        .filter(Objects::nonNull)
+        .map(UUID::toString)
+        .toList();
+    connectionRepository.deleteAll(connectionRepository.findAllByElementIdsIn(elementIds));
   }
 }
