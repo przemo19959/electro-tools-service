@@ -12,6 +12,7 @@ import pl.dabrowski.electrotools.elements.basic.service.update.UpdateBasicElemen
 import pl.dabrowski.electrotools.elements.load.service.create.CreateLoadElementDto;
 import pl.dabrowski.electrotools.elements.load.service.update.UpdateLoadElementDto;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,14 +32,12 @@ public class BasicElementController {
 
   @PostMapping
   public ResponseEntity<ReadAbstractElementDto> create(@RequestBody CreateLoadElementDto dto) {
-    createBasicElementService.create(dto);
-    return ResponseEntity.status(HttpStatus.CREATED).build();
+    return ResponseEntity.status(HttpStatus.CREATED).body(createBasicElementService.create(dto).toDto(Collections.emptyList()));
   }
 
   @PutMapping("/{basicElementId}")
   public ResponseEntity<ReadAbstractElementDto> update(@PathVariable UUID basicElementId, @RequestBody UpdateLoadElementDto dto) {
-    updateBasicElementService.update(basicElementId, dto);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(updateBasicElementService.update(basicElementId, dto).toDto(Collections.emptyList()));
   }
 
   @PostMapping("/delete")
