@@ -45,9 +45,4 @@ public class BasicElementController {
   public void remove(@RequestBody List<UUID> ids) {
     deleteBasicElementService.deleteAllByIdIn(ids);
   }
-
-  @PostMapping("/deep-delete")
-  public void deepRemove(@RequestBody List<UUID> ids) {
-    deleteBasicElementService.deleteAllByIdInWithConnections(ids);
-  }
 }

@@ -23,8 +23,4 @@ public class DeleteBasicElementService {
     deleteOvercurrentProtectionElementService.deleteAllByIdsIn(ids);
     deleteLoadElementService.deleteAllByIdIn(ids);
   }
-
-  public void deleteAllByIdInWithConnections(List<UUID> ids) {
-    deleteAllByIdIn(ids);
-  }
 }
