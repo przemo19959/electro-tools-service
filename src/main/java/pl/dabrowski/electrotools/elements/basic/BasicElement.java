@@ -2,44 +2,49 @@ package pl.dabrowski.electrotools.elements.basic;
 
 import lombok.Getter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import pl.dabrowski.electrotools.elements.basic.service.create.CreateBasicElementDto;
-import pl.dabrowski.electrotools.elements.basic.service.read.ReadBasicElementDto;
-import pl.dabrowski.electrotools.elements.basic.service.update.UpdateBasicElementDto;
+import pl.dabrowski.electrotools.elements.abstractelement.*;
 import pl.dabrowski.electrotools.project.Project;
+import pl.dabrowski.electrotools.wire.Wire;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Table;
+import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
 @Table(name = "t_basic_elements")
 @EntityListeners(value = AuditingEntityListener.class)
-public class BasicElement extends AbstractBasicElement {
-  public static BasicElement create(CreateBasicElementDto dto, Project project) {
+public class BasicElement extends AbstractElement {
+  public static BasicElement create(CreateAbstractElementDto dto,
+                                    Project project) {
     BasicElement basicElement = new BasicElement();
-    basicElement.x = dto.getX();
-    basicElement.y = dto.getY();
-    basicElement.label = dto.getLabel();
-    basicElement.project = project;
+    AbstractElement.create(basicElement, dto, project);
 
     return basicElement;
   }
 
-  public BasicElement update(UpdateBasicElementDto dto) {
-    this.x = dto.getX();
-    this.y = dto.getY();
-    this.label = dto.getLabel();
+  @Override
+  public BasicElement update(UpdateAbstractElementDto dto) {
+    super.update(dto);
 
     return this;
   }
 
-  public ReadBasicElementDto toDto() {
-    return ReadBasicElementDto.builder()
-        .id(id)
-        .x(x)
-        .y(y)
-        .label(label)
-        .build();
+  @Override
+  public ReadAbstractElementDto toDto(List<ReadAbstractElementDto> children) {
+    ReadAbstractElementDto dto = new ReadAbstractElementDto();
+    dto.setId(id);
+    dto.setX(x);
+    dto.setY(y);
+    dto.setLabel(label);
+    dto.setParentId(parentId);
+    dto.setWire(Optional.ofNullable(wire).map(Wire::toDto).orElse(null));
+    dto.setChildren(children);
+
+    dto.setElementType(BasicElementType.UNKNOWN);
+
+    return dto;
   }
 }

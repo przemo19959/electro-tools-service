@@ -1,8 +1,6 @@
 package pl.dabrowski.electrotools.elements.overcurrentprotection;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +12,6 @@ import pl.dabrowski.electrotools.elements.overcurrentprotection.service.read.Rea
 import pl.dabrowski.electrotools.elements.overcurrentprotection.service.update.UpdateOvercurrentProtectionElementDto;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.service.update.UpdateOvercurrentProtectionElementService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,29 +23,16 @@ public class OvercurrentProtectionElementController {
   private final UpdateOvercurrentProtectionElementService updateOvercurrentProtectionElementService;
   private final DeleteOvercurrentProtectionElementService deleteOvercurrentProtectionElementService;
 
-  @GetMapping
-  public ResponseEntity<List<ReadOvercurrentProtectionElementDto>> findAll(@RequestParam UUID projectId) {
-    return ResponseEntity.ok(readOvercurrentProtectionElementService.findAll(projectId));
-  }
-
-  @GetMapping("/page")
-  public ResponseEntity<Page<ReadOvercurrentProtectionElementDto>> pageAll(Pageable pageable) {
-    return ResponseEntity.ok(readOvercurrentProtectionElementService.pageAll(pageable));
-  }
-
-  @GetMapping("/{overcurrentProtectionElementId}")
-  public ResponseEntity<ReadOvercurrentProtectionElementDto> findById(@PathVariable UUID overcurrentProtectionElementId) {
-    return ResponseEntity.ok(readOvercurrentProtectionElementService.findById(overcurrentProtectionElementId));
-  }
-
   @PostMapping
   public ResponseEntity<ReadOvercurrentProtectionElementDto> create(@RequestBody CreateOvercurrentProtectionElementDto dto) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(createOvercurrentProtectionElementService.create(dto).toDto());
+    createOvercurrentProtectionElementService.create(dto);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
   @PutMapping("/{overcurrentProtectionElementId}")
   public ResponseEntity<ReadOvercurrentProtectionElementDto> update(@PathVariable UUID overcurrentProtectionElementId, @RequestBody UpdateOvercurrentProtectionElementDto dto) {
-    return ResponseEntity.ok(updateOvercurrentProtectionElementService.update(overcurrentProtectionElementId, dto).toDto());
+    updateOvercurrentProtectionElementService.update(overcurrentProtectionElementId, dto);
+    return ResponseEntity.ok().build();
   }
 
   @DeleteMapping("/{overcurrentProtectionElementId}")

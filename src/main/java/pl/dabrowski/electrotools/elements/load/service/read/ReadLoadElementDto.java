@@ -1,16 +1,13 @@
 package pl.dabrowski.electrotools.elements.load.service.read;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
-import pl.dabrowski.electrotools.elements.basic.service.read.ReadBasicElementDto;
+import lombok.Setter;
+import pl.dabrowski.electrotools.elements.abstractelement.ReadAbstractElementDto;
 
 @Getter
-@SuperBuilder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ReadLoadElementDto extends ReadBasicElementDto {
-  private final double drawPower;
-  private final double powerFactor;
-  private final Boolean highStartCurrent;
+@Setter
+public class ReadLoadElementDto extends ReadAbstractElementDto {
+  private double drawPower;
+  private double powerFactor;
+  private Boolean highStartCurrent;
 }

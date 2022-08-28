@@ -2,6 +2,7 @@ package pl.dabrowski.electrotools.elements.basic.service.update;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.dabrowski.electrotools.elements.abstractelement.UpdateAbstractElementDto;
 import pl.dabrowski.electrotools.elements.basic.BasicElement;
 import pl.dabrowski.electrotools.elements.basic.repository.BasicElementRepository;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 public class UpdateBasicElementService {
   private final BasicElementRepository basicElementRepository;
 
-  public BasicElement update(UUID loadElementId, UpdateBasicElementDto dto) {
+  public BasicElement update(UUID loadElementId, UpdateAbstractElementDto dto) {
     return basicElementRepository.findById(loadElementId)
         .map(v -> v.update(dto))
         .map(basicElementRepository::save)

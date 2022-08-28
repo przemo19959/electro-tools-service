@@ -1,20 +1,20 @@
-package pl.dabrowski.electrotools.elements.basic.service.read;
+package pl.dabrowski.electrotools.elements.abstractelement;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import pl.dabrowski.electrotools.wire.service.update.UpdateWireDto;
 
 import java.util.UUID;
 
 @Getter
-@SuperBuilder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class ReadBasicElementDto {
-  protected UUID id;
+public class UpdateAbstractElementDto {
   protected double x;
   protected double y;
   protected String label;
+  protected UUID parentId;
+  protected UpdateWireDto wire;
 }
