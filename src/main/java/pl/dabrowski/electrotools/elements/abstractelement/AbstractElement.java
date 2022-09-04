@@ -53,10 +53,15 @@ public class AbstractElement extends AbstractAuditedEntity {
     this.y = dto.getY();
     this.label = dto.getLabel();
     this.parentId = dto.getParentId();
-    if (this.wire == null) {
-      this.wire = new Wire();
+
+    if (dto.getWire() != null) {
+      if (this.wire == null) {
+        this.wire = new Wire();
+      }
+      this.wire.update(dto.getWire());
+    } else {
+      this.wire = null;
     }
-    this.wire.update(dto.getWire());
 
     return this;
   }
