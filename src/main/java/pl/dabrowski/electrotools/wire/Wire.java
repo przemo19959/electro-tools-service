@@ -39,16 +39,19 @@ public class Wire {
   private Double length = 5.0;
 
   public static Wire create(CreateWireDto dto) {
-    final Wire wire = new Wire();
     if (dto != null) {
+      final Wire wire = new Wire();
+
       wire.diameter = dto.getDiameter();
       wire.symbol = dto.getSymbol();
       wire.placement = dto.getPlacement();
       wire.wireType = dto.getType();
       wire.phase = dto.getPhase();
       wire.length = dto.getLength();
+
+      return wire;
     }
-    return wire;
+    return null;
   }
 
   public Wire update(UpdateWireDto dto) {
