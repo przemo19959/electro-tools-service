@@ -12,10 +12,7 @@ import pl.dabrowski.electrotools.elements.load.service.update.UpdateLoadElementD
 import pl.dabrowski.electrotools.project.Project;
 import pl.dabrowski.electrotools.wire.Wire;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,15 +31,24 @@ public class LoadElement extends AbstractElement {
   @Column(name = "high_start_current")
   private Boolean highStartCurrent;
 
+  @Column(name = "config")
+  @Enumerated(EnumType.STRING)
+  private Config config;
+
+  @Column(name = "zeroed")
+  private Boolean zeroed;
+
   public static LoadElement create(CreateLoadElementDto dto, Project project) {
-    final LoadElement loadElement = new LoadElement();
-    AbstractElement.create(loadElement, dto, project);
+    final LoadElement load = new LoadElement();
+    AbstractElement.create(load, dto, project);
 
-    loadElement.drawPower = dto.getDrawPower();
-    loadElement.powerFactor = dto.getPowerFactor();
-    loadElement.highStartCurrent = dto.isHighStartCurrent();
+    load.drawPower = dto.getDrawPower();
+    load.powerFactor = dto.getPowerFactor();
+    load.highStartCurrent = dto.isHighStartCurrent();
+    load.config = dto.getConfig();
+    load.zeroed = dto.isZeroed();
 
-    return loadElement;
+    return load;
   }
 
   public LoadElement update(UpdateLoadElementDto dto) {
@@ -50,6 +56,8 @@ public class LoadElement extends AbstractElement {
     this.drawPower = dto.getDrawPower();
     this.powerFactor = dto.getPowerFactor();
     this.highStartCurrent = dto.isHighStartCurrent();
+    this.config = dto.getConfig();
+    this.zeroed = dto.isZeroed();
 
     return this;
   }
@@ -69,6 +77,8 @@ public class LoadElement extends AbstractElement {
     dto.setDrawPower(drawPower);
     dto.setPowerFactor(powerFactor);
     dto.setHighStartCurrent(highStartCurrent);
+    dto.setConfig(config);
+    dto.setZeroed(Optional.ofNullable(zeroed).orElse(Boolean.FALSE));
 
     return dto;
   }
