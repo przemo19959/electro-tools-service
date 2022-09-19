@@ -19,10 +19,6 @@ public class Wire {
   private WireDiameter diameter;
 
   @Enumerated(value = EnumType.STRING)
-  @Column(name = "symbol")
-  private WireSymbol symbol;
-
-  @Enumerated(value = EnumType.STRING)
   @Column(name = "placement")
   private PlacementType placement;
 
@@ -43,7 +39,6 @@ public class Wire {
       final Wire wire = new Wire();
 
       wire.diameter = dto.getDiameter();
-      wire.symbol = dto.getSymbol();
       wire.placement = dto.getPlacement();
       wire.wireType = dto.getType();
       wire.phase = dto.getPhase();
@@ -57,7 +52,6 @@ public class Wire {
   public Wire update(UpdateWireDto dto) {
     if (dto != null) {
       this.diameter = dto.getDiameter();
-      this.symbol = dto.getSymbol();
       this.placement = dto.getPlacement();
       this.wireType = dto.getType();
       this.phase = dto.getPhase();
@@ -70,7 +64,6 @@ public class Wire {
   public ReadWireDto toDto() {
     return ReadWireDto.builder()
         .diameter(diameter)
-        .symbol(symbol)
         .placement(placement)
         .type(wireType)
         .phase(phase)
