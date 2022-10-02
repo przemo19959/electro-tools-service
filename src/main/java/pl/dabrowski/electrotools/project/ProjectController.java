@@ -15,6 +15,7 @@ import pl.dabrowski.electrotools.project.service.update.UpdateProjectDto;
 import pl.dabrowski.electrotools.project.service.update.UpdateProjectService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -32,8 +33,9 @@ public class ProjectController {
   }
 
   @GetMapping("/page")
-  public ResponseEntity<Page<ReadProjectDto>> pageAll(Pageable pageable) {
-    return ResponseEntity.ok(readProjectService.pageAll(pageable));
+  public ResponseEntity<Page<ReadProjectDto>> pageAll(Pageable pageable,
+                                                      @RequestParam Optional<String> query) {
+    return ResponseEntity.ok(readProjectService.pageAll(pageable, query));
   }
 
   @GetMapping("/{projectId}")

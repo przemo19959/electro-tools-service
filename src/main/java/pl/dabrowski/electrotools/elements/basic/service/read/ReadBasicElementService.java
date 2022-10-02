@@ -32,7 +32,9 @@ public class ReadBasicElementService {
         .collect(Collectors.groupingBy(v -> Optional.ofNullable(v.getParentId())));
 
     List<ReadAbstractElementDto> result = new ArrayList<>();
-    groupedByParent.get(Optional.empty()).forEach(v -> result.add(treeChildren(v, groupedByParent)));
+    if (groupedByParent.containsKey(Optional.empty())) {
+      groupedByParent.get(Optional.empty()).forEach(v -> result.add(treeChildren(v, groupedByParent)));
+    }
 
     return result;
   }
