@@ -4,5 +4,6 @@ public enum BasicElementType {
   OVER_CURRENT_PROTECTION,
   UNKNOWN,
   LOAD,
-  TERMINAL;
+  TERMINAL,
+  RCD
 }

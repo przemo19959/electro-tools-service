@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.dabrowski.electrotools.elements.basic.repository.BasicElementRepository;
 import pl.dabrowski.electrotools.elements.load.service.delete.DeleteLoadElementService;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.service.delete.DeleteOvercurrentProtectionElementService;
+import pl.dabrowski.electrotools.elements.rcdelement.service.delete.DeleteRcdElementService;
 import pl.dabrowski.electrotools.elements.terminalelement.service.delete.DeleteTerminalElementService;
 
 import javax.transaction.Transactional;
@@ -19,11 +20,13 @@ public class DeleteBasicElementService {
   private final DeleteOvercurrentProtectionElementService deleteOvercurrentProtectionElementService;
   private final DeleteLoadElementService deleteLoadElementService;
   private final DeleteTerminalElementService deleteTerminalElementService;
+  private final DeleteRcdElementService deleteRcdElementService;
 
   public void deleteAllByIdIn(List<UUID> ids) {
     basicElementRepository.deleteAll(basicElementRepository.findAllById(ids));
     deleteOvercurrentProtectionElementService.deleteAllByIdsIn(ids);
     deleteLoadElementService.deleteAllByIdIn(ids);
     deleteTerminalElementService.deleteAllByIdIn(ids);
+    deleteRcdElementService.deleteAllByIdIn(ids);
   }
 }

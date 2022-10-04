@@ -7,6 +7,7 @@ import pl.dabrowski.electrotools.elements.abstractelement.ReadAbstractElementDto
 import pl.dabrowski.electrotools.elements.basic.repository.BasicElementRepository;
 import pl.dabrowski.electrotools.elements.load.service.read.ReadLoadElementService;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.service.read.ReadOvercurrentProtectionElementService;
+import pl.dabrowski.electrotools.elements.rcdelement.service.read.ReadRcdElementService;
 import pl.dabrowski.electrotools.elements.terminalelement.service.read.ReadTerminalElementService;
 
 import java.util.*;
@@ -19,6 +20,7 @@ public class ReadBasicElementService {
   private final ReadLoadElementService readLoadElementService;
   private final ReadOvercurrentProtectionElementService readOvercurrentProtectionElementService;
   private final ReadTerminalElementService readTerminalElementService;
+  private final ReadRcdElementService readRcdElementService;
 
   public List<ReadAbstractElementDto> getTree(UUID projectId) {
     List<AbstractElement> elements = new ArrayList<>();
@@ -27,6 +29,7 @@ public class ReadBasicElementService {
     elements.addAll(readLoadElementService.findAll(projectId));
     elements.addAll(readOvercurrentProtectionElementService.findAll(projectId));
     elements.addAll(readTerminalElementService.findAll(projectId));
+    elements.addAll(readRcdElementService.findAll(projectId));
 
     Map<Optional<UUID>, List<AbstractElement>> groupedByParent = elements.stream()
         .collect(Collectors.groupingBy(v -> Optional.ofNullable(v.getParentId())));

@@ -12,7 +12,10 @@ import pl.dabrowski.electrotools.elements.terminalelement.service.update.UpdateT
 import pl.dabrowski.electrotools.project.Project;
 import pl.dabrowski.electrotools.wire.Wire;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.Table;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +26,7 @@ import java.util.Optional;
 @Audited
 public class TerminalElement extends AbstractElement {
   @Column(name = "type")
-  @GeneratedValue
-  public TerminalType type;
+  private TerminalType type;
 
   public static TerminalElement create(CreateTerminalElementDto dto, Project project) {
     final TerminalElement terminalElement = new TerminalElement();
