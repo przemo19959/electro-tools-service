@@ -4,10 +4,10 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import pl.dabrowski.electrotools.wire.PhaseType;
 import pl.dabrowski.electrotools.wire.PlacementType;
 import pl.dabrowski.electrotools.wire.WireDiameter;
 import pl.dabrowski.electrotools.wire.WireType;
+import pl.dabrowski.electrotools.wire.phase.PhaseType;
 
 @Getter
 @Builder

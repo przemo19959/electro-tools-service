@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dabrowski.electrotools.project.Project;
 import pl.dabrowski.electrotools.project.repository.ProjectRepository;
+import pl.dabrowski.electrotools.project.service.exists.ExistProjectService;
 
 import javax.transaction.Transactional;
 import java.util.NoSuchElementException;
@@ -13,10 +14,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Transactional
 public class UpdateProjectService {
+  private final ProjectRepository projectRepository;
+  private final ExistProjectService existProjectService;
 
-    private final ProjectRepository projectRepository;
+  public Project update(UUID projectId, UpdateProjectDto dto) {
+    existProjectService.check(projectId, dto.getName());
 
-    public Project update(UUID projectId, UpdateProjectDto dto) {
-        return projectRepository.findById(projectId).map(v -> v.update(dto)).map(projectRepository::save).orElseThrow(() -> new NoSuchElementException("No Project with id: " + projectId + ""));
-    }
+    return projectRepository.findById(projectId)
+        .map(v -> v.update(dto)).map(projectRepository::save)
+        .orElseThrow(() -> new NoSuchElementException("No Project with id: " + projectId + ""));
+  }
 }

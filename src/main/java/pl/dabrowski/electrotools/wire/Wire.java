@@ -1,6 +1,7 @@
 package pl.dabrowski.electrotools.wire;
 
 import lombok.Getter;
+import pl.dabrowski.electrotools.wire.phase.PhaseType;
 import pl.dabrowski.electrotools.wire.service.create.CreateWireDto;
 import pl.dabrowski.electrotools.wire.service.read.ReadWireDto;
 import pl.dabrowski.electrotools.wire.service.update.UpdateWireDto;
