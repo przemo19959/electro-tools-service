@@ -5,16 +5,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import pl.dabrowski.electrotools.security.SecurityAuditorAware;
+import pl.dabrowski.electrotools.security.SecurityConverter;
 
 import javax.persistence.EntityManager;
 
@@ -22,9 +24,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @SpringBootApplication
 @EnableJpaRepositories
-@EnableJpaAuditing
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ElectroToolsApplication {
   private final EntityManager entityManager;
 
@@ -51,26 +54,30 @@ public class ElectroToolsApplication {
   }
 
   @Bean
-  public InMemoryUserDetailsManager userDetailsService() {
-    UserDetails user = User.withDefaultPasswordEncoder()
-        .username("admin")
-        .password("admin")
-        .roles("ADMIN")
-        .build();
-    return new InMemoryUserDetailsManager(user);
-  }
-
-  @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .cors(withDefaults())
         .csrf().disable()
         .authorizeRequests()
-//        .antMatchers("/projects/page").permitAll()
-        .anyRequest().hasRole("ADMIN")
+        .anyRequest()
+        .authenticated()
         .and()
-        .httpBasic();
+        .oauth2ResourceServer()
+        .jwt(jwt -> jwt.jwtAuthenticationConverter(tokenConverter()));
 
     return http.build();
+  }
+
+  @Bean
+  public JwtAuthenticationConverter tokenConverter() {
+    JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+    converter.setJwtGrantedAuthoritiesConverter(new SecurityConverter());
+
+    return converter;
+  }
+
+  @Bean
+  AuditorAware<String> auditorProvider() {
+    return new SecurityAuditorAware();
   }
 }
