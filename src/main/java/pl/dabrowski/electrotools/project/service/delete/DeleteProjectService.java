@@ -13,6 +13,7 @@ import java.util.UUID;
 public class DeleteProjectService {
   private final ProjectRepository projectRepository;
 
+  // TODO 30.01.2023 pdabrowski: usunąć powiązane z projektem elementy + zapytanie z ostrzeżeniem jeśli istnieją projekty
   public void deleteById(UUID projectId) {
     projectRepository.deleteById(projectId);
   }
