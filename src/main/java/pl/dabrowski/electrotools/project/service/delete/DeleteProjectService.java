@@ -2,6 +2,7 @@ package pl.dabrowski.electrotools.project.service.delete;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.dabrowski.electrotools.elements.basic.service.delete.DeleteBasicElementService;
 import pl.dabrowski.electrotools.project.repository.ProjectRepository;
 
 import javax.transaction.Transactional;
@@ -12,9 +13,10 @@ import java.util.UUID;
 @Transactional
 public class DeleteProjectService {
   private final ProjectRepository projectRepository;
+  private final DeleteBasicElementService deleteBasicElementService;
 
-  // TODO 30.01.2023 pdabrowski: usunąć powiązane z projektem elementy + zapytanie z ostrzeżeniem jeśli istnieją projekty
   public void deleteById(UUID projectId) {
+    deleteBasicElementService.deleteAllByProjectId(projectId);
     projectRepository.deleteById(projectId);
   }
 }

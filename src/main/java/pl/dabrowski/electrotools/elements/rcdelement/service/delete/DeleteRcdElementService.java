@@ -12,13 +12,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Transactional
 public class DeleteRcdElementService {
-    private final RcdElementRepository rcdElementRepository;
+  private final RcdElementRepository rcdElementRepository;
 
-    public void deleteById(UUID rcdElementId) {
-        rcdElementRepository.deleteById(rcdElementId);
-    }
+  public void deleteById(UUID rcdElementId) {
+    rcdElementRepository.deleteById(rcdElementId);
+  }
 
-    public void deleteAllByIdIn(List<UUID> ids) {
-        rcdElementRepository.deleteAll(rcdElementRepository.findAllById(ids));
-    }
+  public void deleteAllByIdIn(List<UUID> ids) {
+    rcdElementRepository.deleteAll(rcdElementRepository.findAllById(ids));
+  }
+
+  public void deleteAllByProjectId(UUID projectId) {
+    rcdElementRepository.deleteAll(rcdElementRepository.findAllByProjectId(projectId));
+  }
 }

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import pl.dabrowski.electrotools.elements.basic.QBasicElement;
 import pl.dabrowski.electrotools.elements.load.QLoadElement;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.QOvercurrentProtectionElement;
+import pl.dabrowski.electrotools.elements.rcdelement.QRcdElement;
 import pl.dabrowski.electrotools.elements.terminalelement.QTerminalElement;
 import pl.dabrowski.electrotools.project.Project;
 import pl.dabrowski.electrotools.project.QProject;
@@ -45,6 +46,7 @@ public class ReadProjectService {
     QLoadElement loadElement = QLoadElement.loadElement;
     QOvercurrentProtectionElement overcurrentProtectionElement = QOvercurrentProtectionElement.overcurrentProtectionElement;
     QTerminalElement terminalElement = QTerminalElement.terminalElement;
+    QRcdElement rcdElement = QRcdElement.rcdElement;
 
     BooleanBuilder bb = new BooleanBuilder();
     query.ifPresent(v -> bb.andAnyOf(
@@ -57,7 +59,8 @@ public class ReadProjectService {
     NumberExpression<Long> lCount = Expressions.asNumber(JPAExpressions.select(loadElement.count()).from(loadElement).where(loadElement.project.id.eq(project.id)));
     NumberExpression<Long> oCount = Expressions.asNumber(JPAExpressions.select(overcurrentProtectionElement.count()).from(overcurrentProtectionElement).where(overcurrentProtectionElement.project.id.eq(project.id)));
     NumberExpression<Long> tCount = Expressions.asNumber(JPAExpressions.select(terminalElement.count()).from(terminalElement).where(terminalElement.project.id.eq(project.id)));
-    JPAQuery<Tuple> sql = jpaQueryFactory.select(project.id, project.name, project.owner, bCount, lCount, oCount, tCount)
+    NumberExpression<Long> rCount = Expressions.asNumber(JPAExpressions.select(rcdElement.count()).from(rcdElement).where(rcdElement.project.id.eq(project.id)));
+    JPAQuery<Tuple> sql = jpaQueryFactory.select(project.id, project.name, project.owner, bCount, lCount, oCount, tCount, rCount)
         .from(project)
         .where(bb)
         .offset(pageable.getOffset())
@@ -65,7 +68,7 @@ public class ReadProjectService {
 
     return new PageImpl<>(sql.fetch().stream()
         .map(v -> new ReadProjectDto(v.get(project.id), v.get(project.name), v.get(project.owner),
-            v.get(3, Long.class) + v.get(4, Long.class) + v.get(5, Long.class) + v.get(6, Long.class)))
+            v.get(3, Long.class) + v.get(4, Long.class) + v.get(5, Long.class) + v.get(6, Long.class) + v.get(7, Long.class)))
         .toList(), pageable, sql.fetchCount());
   }
 

@@ -29,4 +29,13 @@ public class DeleteBasicElementService {
     deleteTerminalElementService.deleteAllByIdIn(ids);
     deleteRcdElementService.deleteAllByIdIn(ids);
   }
+
+  public void deleteAllByProjectId(UUID projectId) {
+    basicElementRepository.deleteAll(basicElementRepository.findAllByProjectId(projectId));
+
+    deleteOvercurrentProtectionElementService.deleteAllByProjectId(projectId);
+    deleteLoadElementService.deleteAllByProjectId(projectId);
+    deleteTerminalElementService.deleteAllByProjectId(projectId);
+    deleteRcdElementService.deleteAllByProjectId(projectId);
+  }
 }

@@ -12,13 +12,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Transactional
 public class DeleteTerminalElementService {
-    private final TerminalElementRepository terminalElementRepository;
+  private final TerminalElementRepository terminalElementRepository;
 
-    public void deleteById(UUID terminalElementId) {
-        terminalElementRepository.deleteById(terminalElementId);
-    }
+  public void deleteById(UUID terminalElementId) {
+    terminalElementRepository.deleteById(terminalElementId);
+  }
 
-    public void deleteAllByIdIn(List<UUID> ids) {
-        terminalElementRepository.deleteAll(terminalElementRepository.findAllById(ids));
-    }
+  public void deleteAllByIdIn(List<UUID> ids) {
+    terminalElementRepository.deleteAll(terminalElementRepository.findAllById(ids));
+  }
+
+  public void deleteAllByProjectId(UUID projectId) {
+    terminalElementRepository.deleteAll(terminalElementRepository.findAllByProjectId(projectId));
+  }
 }

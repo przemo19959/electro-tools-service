@@ -21,4 +21,8 @@ public class DeleteLoadElementService {
   public void deleteAllByIdIn(List<UUID> ids) {
     loadElementRepository.deleteAll(loadElementRepository.findAllById(ids));
   }
+
+  public void deleteAllByProjectId(UUID projectId) {
+    loadElementRepository.deleteAll(loadElementRepository.findAllByProjectId(projectId));
+  }
 }

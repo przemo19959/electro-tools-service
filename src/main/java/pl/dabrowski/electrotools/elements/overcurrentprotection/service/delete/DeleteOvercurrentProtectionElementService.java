@@ -21,4 +21,8 @@ public class DeleteOvercurrentProtectionElementService {
   public void deleteAllByIdsIn(List<UUID> ids) {
     overcurrentProtectionElementRepository.deleteAll(overcurrentProtectionElementRepository.findAllById(ids));
   }
+
+  public void deleteAllByProjectId(UUID projectId) {
+    overcurrentProtectionElementRepository.deleteAll(overcurrentProtectionElementRepository.findAllByProjectId(projectId));
+  }
 }
