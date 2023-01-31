@@ -21,51 +21,55 @@ import java.util.UUID;
 @EntityListeners(value = AuditingEntityListener.class)
 @Audited
 public class Project {
-    @Id
-    @GeneratedValue
-    @Column(name = "id")
-    private UUID id;
+  @Id
+  @GeneratedValue
+  @Column(name = "id")
+  private UUID id;
 
-    @Column(name = "name")
-    private String name;
+  @Column(name = "name")
+  private String name;
 
-    @Column(name = "owner")
-    private String owner;
+  @Column(name = "owner")
+  private String owner;
 
-    @Version
-    @Column(name = "version")
-    private Integer version;
+  @Version
+  @Column(name = "version")
+  private Integer version;
 
-    @CreatedBy
-    @Column(name = "created_by", updatable = false)
-    private String createdBy;
+  @CreatedBy
+  @Column(name = "created_by", updatable = false)
+  private String createdBy;
 
-    @CreatedDate
-    @Column(name = "created_date", updatable = false)
-    private Instant createdDate;
+  @CreatedDate
+  @Column(name = "created_date", updatable = false)
+  private Instant createdDate;
 
-    @LastModifiedBy
-    @Column(name = "modified_by")
-    private String modifiedBy;
+  @LastModifiedBy
+  @Column(name = "modified_by")
+  private String modifiedBy;
 
-    @LastModifiedDate
-    @Column(name = "modified_date")
-    private Instant modifiedDate;
+  @LastModifiedDate
+  @Column(name = "modified_date")
+  private Instant modifiedDate;
 
-    public static Project create(CreateProjectDto dto) {
-        final Project project = new Project();
-        project.name = dto.getName();
-        project.owner = dto.getOwner();
-        return project;
-    }
+  public static Project create(CreateProjectDto dto) {
+    final Project project = new Project();
+    project.name = dto.getName();
+    project.owner = dto.getOwner();
+    return project;
+  }
 
-    public Project update(UpdateProjectDto dto) {
-        this.name = dto.getName();
-        this.owner = dto.getOwner();
-        return this;
-    }
+  public Project update(UpdateProjectDto dto) {
+    this.name = dto.getName();
+    this.owner = dto.getOwner();
+    return this;
+  }
 
-    public ReadProjectDto toDto() {
-        return ReadProjectDto.builder().id(id).name(name).owner(owner).build();
-    }
+  public ReadProjectDto toDto() {
+    return ReadProjectDto.builder()
+        .id(id)
+        .name(name)
+        .owner(owner)
+        .build();
+  }
 }
