@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface BasicElementRepository extends JpaRepository<BasicElement, UUID> {
   List<BasicElement> findAllByProjectId(UUID projectId);
+  void deleteByProjectIdIn(List<UUID> projectIds);
 }

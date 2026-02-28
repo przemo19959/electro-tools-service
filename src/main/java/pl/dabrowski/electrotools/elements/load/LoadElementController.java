@@ -13,6 +13,7 @@ import pl.dabrowski.electrotools.elements.load.service.update.UpdateLoadElementD
 import pl.dabrowski.electrotools.elements.load.service.update.UpdateLoadElementService;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -38,7 +39,7 @@ public class LoadElementController {
     @DeleteMapping("/{loadElementId}")
 //    @PreAuthorize("hasAuthority('edit_elements')")
     public ResponseEntity<Void> deleteById(@PathVariable UUID loadElementId) {
-        deleteLoadElementService.deleteById(loadElementId);
+        deleteLoadElementService.deleteAllByIdIn(List.of(loadElementId));
         return ResponseEntity.ok().build();
     }
 }

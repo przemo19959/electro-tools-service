@@ -23,19 +23,26 @@ public class DeleteBasicElementService {
   private final DeleteRcdElementService deleteRcdElementService;
 
   public void deleteAllByIdIn(List<UUID> ids) {
-    basicElementRepository.deleteAll(basicElementRepository.findAllById(ids));
+    if (ids == null || ids.isEmpty()) {
+      return;
+    }
+
+    basicElementRepository.deleteAllByIdInBatch(ids);
     deleteOvercurrentProtectionElementService.deleteAllByIdsIn(ids);
     deleteLoadElementService.deleteAllByIdIn(ids);
     deleteTerminalElementService.deleteAllByIdIn(ids);
     deleteRcdElementService.deleteAllByIdIn(ids);
   }
 
-  public void deleteAllByProjectId(UUID projectId) {
-    basicElementRepository.deleteAll(basicElementRepository.findAllByProjectId(projectId));
+  public void deleteAllByProjectIdIn(List<UUID> projectIds) {
+    if (projectIds == null || projectIds.isEmpty()) {
+      return;
+    }
 
-    deleteOvercurrentProtectionElementService.deleteAllByProjectId(projectId);
-    deleteLoadElementService.deleteAllByProjectId(projectId);
-    deleteTerminalElementService.deleteAllByProjectId(projectId);
-    deleteRcdElementService.deleteAllByProjectId(projectId);
+    basicElementRepository.deleteByProjectIdIn(projectIds);
+    deleteOvercurrentProtectionElementService.deleteAllByProjectIdIn(projectIds);
+    deleteLoadElementService.deleteAllByProjectIdIn(projectIds);
+    deleteTerminalElementService.deleteAllByProjectIdIn(projectIds);
+    deleteRcdElementService.deleteAllByProjectIdIn(projectIds);
   }
 }

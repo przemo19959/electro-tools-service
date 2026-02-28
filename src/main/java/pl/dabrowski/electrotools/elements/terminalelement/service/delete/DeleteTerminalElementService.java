@@ -14,15 +14,11 @@ import java.util.UUID;
 public class DeleteTerminalElementService {
   private final TerminalElementRepository terminalElementRepository;
 
-  public void deleteById(UUID terminalElementId) {
-    terminalElementRepository.deleteById(terminalElementId);
-  }
-
   public void deleteAllByIdIn(List<UUID> ids) {
-    terminalElementRepository.deleteAll(terminalElementRepository.findAllById(ids));
+    terminalElementRepository.deleteAllByIdInBatch(ids);
   }
 
-  public void deleteAllByProjectId(UUID projectId) {
-    terminalElementRepository.deleteAll(terminalElementRepository.findAllByProjectId(projectId));
+  public void deleteAllByProjectIdIn(List<UUID> projectIds) {
+    terminalElementRepository.deleteByProjectIdIn(projectIds);
   }
 }

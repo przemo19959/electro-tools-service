@@ -13,6 +13,7 @@ import pl.dabrowski.electrotools.elements.rcdelement.service.update.UpdateRcdEle
 import pl.dabrowski.electrotools.elements.rcdelement.service.update.UpdateRcdElementService;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -38,7 +39,7 @@ public class RcdElementController {
   @DeleteMapping("/{rcdElementId}")
 //  @PreAuthorize("hasAuthority('edit_elements')")
   public ResponseEntity<Void> deleteById(@PathVariable UUID rcdElementId) {
-    deleteRcdElementService.deleteById(rcdElementId);
+    deleteRcdElementService.deleteAllByIdIn(List.of(rcdElementId));
     return ResponseEntity.ok().build();
   }
 }

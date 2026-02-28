@@ -60,10 +60,10 @@ public class ProjectController {
     return ResponseEntity.ok(updateProjectService.update(projectId, dto).toDto());
   }
 
-  @DeleteMapping("/{projectId}")
+  @DeleteMapping
 //  @PreAuthorize("hasAuthority('edit_projects')")
-  public ResponseEntity<Void> deleteById(@PathVariable UUID projectId) {
-    deleteProjectService.deleteById(projectId);
+  public ResponseEntity<Void> deleteAllById(@RequestBody List<UUID> projectIds) {
+    deleteProjectService.deleteAllById(projectIds);
     return ResponseEntity.ok().build();
   }
 }

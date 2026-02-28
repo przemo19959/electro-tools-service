@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface LoadElementRepository extends JpaRepository<LoadElement, UUID> {
   List<LoadElement> findAllByProjectId(UUID projectId);
+  void deleteByProjectIdIn(List<UUID> projectIds);
 }

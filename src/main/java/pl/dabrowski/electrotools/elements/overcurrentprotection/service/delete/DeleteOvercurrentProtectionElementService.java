@@ -19,10 +19,10 @@ public class DeleteOvercurrentProtectionElementService {
   }
 
   public void deleteAllByIdsIn(List<UUID> ids) {
-    overcurrentProtectionElementRepository.deleteAll(overcurrentProtectionElementRepository.findAllById(ids));
+    overcurrentProtectionElementRepository.deleteAllByIdInBatch(ids);
   }
 
-  public void deleteAllByProjectId(UUID projectId) {
-    overcurrentProtectionElementRepository.deleteAll(overcurrentProtectionElementRepository.findAllByProjectId(projectId));
+  public void deleteAllByProjectIdIn(List<UUID> projectIds) {
+    overcurrentProtectionElementRepository.deleteByProjectIdIn(projectIds);
   }
 }

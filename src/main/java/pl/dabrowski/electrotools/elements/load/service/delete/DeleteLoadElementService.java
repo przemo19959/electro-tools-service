@@ -14,15 +14,11 @@ import java.util.UUID;
 public class DeleteLoadElementService {
   private final LoadElementRepository loadElementRepository;
 
-  public void deleteById(UUID loadElementId) {
-    loadElementRepository.deleteById(loadElementId);
-  }
-
   public void deleteAllByIdIn(List<UUID> ids) {
-    loadElementRepository.deleteAll(loadElementRepository.findAllById(ids));
+    loadElementRepository.deleteAllByIdInBatch(ids);
   }
 
-  public void deleteAllByProjectId(UUID projectId) {
-    loadElementRepository.deleteAll(loadElementRepository.findAllByProjectId(projectId));
+  public void deleteAllByProjectIdIn(List<UUID> projectIds) {
+    loadElementRepository.deleteByProjectIdIn(projectIds);
   }
 }

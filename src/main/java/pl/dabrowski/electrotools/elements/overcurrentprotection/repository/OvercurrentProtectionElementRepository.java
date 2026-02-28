@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface OvercurrentProtectionElementRepository extends JpaRepository<OvercurrentProtectionElement, UUID> {
   List<OvercurrentProtectionElement> findAllByProjectId(UUID projectId);
+  void deleteByProjectIdIn(List<UUID> projectIds);
 }

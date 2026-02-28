@@ -13,6 +13,7 @@ import pl.dabrowski.electrotools.elements.terminalelement.service.update.UpdateT
 import pl.dabrowski.electrotools.elements.terminalelement.service.update.UpdateTerminalElementService;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -38,7 +39,7 @@ public class TerminalElementController {
   @DeleteMapping("/{terminalElementId}")
 //  @PreAuthorize("hasAuthority('edit_elements')")
   public ResponseEntity<Void> deleteById(@PathVariable UUID terminalElementId) {
-    deleteTerminalElementService.deleteById(terminalElementId);
+    deleteTerminalElementService.deleteAllByIdIn(List.of(terminalElementId));
     return ResponseEntity.ok().build();
   }
 }
