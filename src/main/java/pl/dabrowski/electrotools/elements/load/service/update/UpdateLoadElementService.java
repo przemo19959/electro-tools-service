@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.dabrowski.electrotools.elements.load.LoadElement;
 import pl.dabrowski.electrotools.elements.load.repository.LoadElementRepository;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 

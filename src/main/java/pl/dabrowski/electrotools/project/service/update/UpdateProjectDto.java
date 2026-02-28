@@ -8,5 +8,4 @@ import lombok.*;
 @NoArgsConstructor
 public class UpdateProjectDto {
   private String name;
-  private String owner;
 }

@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/rcdElements")
+@RequestMapping("/api/v1/rcdElements")
 @RequiredArgsConstructor
 public class RcdElementController {
   private final CreateRcdElementService createRcdElementService;
@@ -24,19 +24,19 @@ public class RcdElementController {
   private final DeleteRcdElementService deleteRcdElementService;
 
   @PostMapping
-  @PreAuthorize("hasAuthority('edit_elements')")
+//  @PreAuthorize("hasAuthority('edit_elements')")
   public ResponseEntity<ReadAbstractElementDto> create(@RequestBody CreateRcdElementDto dto) {
     return ResponseEntity.status(HttpStatus.CREATED).body(createRcdElementService.create(dto).toDto(Collections.emptyList()));
   }
 
   @PutMapping("/{rcdElementId}")
-  @PreAuthorize("hasAuthority('edit_elements')")
+//  @PreAuthorize("hasAuthority('edit_elements')")
   public ResponseEntity<ReadAbstractElementDto> update(@PathVariable UUID rcdElementId, @RequestBody UpdateRcdElementDto dto) {
     return ResponseEntity.ok(updateRcdElementService.update(rcdElementId, dto).toDto(Collections.emptyList()));
   }
 
   @DeleteMapping("/{rcdElementId}")
-  @PreAuthorize("hasAuthority('edit_elements')")
+//  @PreAuthorize("hasAuthority('edit_elements')")
   public ResponseEntity<Void> deleteById(@PathVariable UUID rcdElementId) {
     deleteRcdElementService.deleteById(rcdElementId);
     return ResponseEntity.ok().build();

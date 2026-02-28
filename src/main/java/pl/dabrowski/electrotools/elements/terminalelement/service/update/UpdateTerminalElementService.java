@@ -7,7 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.dabrowski.electrotools.elements.terminalelement.TerminalElement;
 import pl.dabrowski.electrotools.elements.terminalelement.repository.TerminalElementRepository;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 

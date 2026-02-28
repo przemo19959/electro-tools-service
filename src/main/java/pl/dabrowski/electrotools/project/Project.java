@@ -11,7 +11,7 @@ import pl.dabrowski.electrotools.project.service.create.CreateProjectDto;
 import pl.dabrowski.electrotools.project.service.read.ReadProjectDto;
 import pl.dabrowski.electrotools.project.service.update.UpdateProjectDto;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -28,9 +28,6 @@ public class Project {
 
   @Column(name = "name")
   private String name;
-
-  @Column(name = "owner")
-  private String owner;
 
   @Version
   @Column(name = "version")
@@ -55,13 +52,11 @@ public class Project {
   public static Project create(CreateProjectDto dto) {
     final Project project = new Project();
     project.name = dto.getName();
-    project.owner = dto.getOwner();
     return project;
   }
 
   public Project update(UpdateProjectDto dto) {
     this.name = dto.getName();
-    this.owner = dto.getOwner();
     return this;
   }
 
@@ -69,7 +64,9 @@ public class Project {
     return ReadProjectDto.builder()
         .id(id)
         .name(name)
-        .owner(owner)
+        .createdBy(createdBy)
+        .modifiedBy(modifiedBy)
+        .modifiedDate(modifiedDate)
         .build();
   }
 }

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.dabrowski.electrotools.elements.basic.service.delete.DeleteBasicElementService;
 import pl.dabrowski.electrotools.project.repository.ProjectRepository;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.UUID;
 
 @Service

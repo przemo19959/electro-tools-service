@@ -12,11 +12,11 @@ import pl.dabrowski.electrotools.elements.rcdelement.service.update.UpdateRcdEle
 import pl.dabrowski.electrotools.project.Project;
 import pl.dabrowski.electrotools.wire.Wire;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Table;
-import javax.validation.constraints.Positive;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import java.util.Optional;
 

@@ -6,9 +6,9 @@ import pl.dabrowski.electrotools.elements.abstractelement.*;
 import pl.dabrowski.electrotools.project.Project;
 import pl.dabrowski.electrotools.wire.Wire;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Table;
 import java.util.List;
 import java.util.Optional;
 

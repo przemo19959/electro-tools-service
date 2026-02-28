@@ -12,7 +12,7 @@ import pl.dabrowski.electrotools.elements.load.service.update.UpdateLoadElementD
 import pl.dabrowski.electrotools.project.Project;
 import pl.dabrowski.electrotools.wire.Wire;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 import java.util.Optional;
 

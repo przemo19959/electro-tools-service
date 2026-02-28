@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/elements")
+@RequestMapping("/api/v1/elements")
 @RequiredArgsConstructor
 public class BasicElementController {
   private final ReadBasicElementService readBasicElementService;
@@ -27,25 +27,25 @@ public class BasicElementController {
   private final DeleteBasicElementService deleteBasicElementService;
 
   @GetMapping("/tree")
-  @PreAuthorize("hasAuthority('read_elements')")
+//  @PreAuthorize("hasAuthority('read_elements')")
   public ResponseEntity<List<ReadAbstractElementDto>> getTree(@RequestParam UUID projectId) {
     return ResponseEntity.ok(readBasicElementService.getTree(projectId));
   }
 
   @PostMapping
-  @PreAuthorize("hasAuthority('edit_elements')")
+//  @PreAuthorize("hasAuthority('edit_elements')")
   public ResponseEntity<ReadAbstractElementDto> create(@RequestBody CreateLoadElementDto dto) {
     return ResponseEntity.status(HttpStatus.CREATED).body(createBasicElementService.create(dto).toDto(Collections.emptyList()));
   }
 
   @PutMapping("/{basicElementId}")
-  @PreAuthorize("hasAuthority('edit_elements')")
+//  @PreAuthorize("hasAuthority('edit_elements')")
   public ResponseEntity<ReadAbstractElementDto> update(@PathVariable UUID basicElementId, @RequestBody UpdateLoadElementDto dto) {
     return ResponseEntity.ok(updateBasicElementService.update(basicElementId, dto).toDto(Collections.emptyList()));
   }
 
   @PostMapping("/delete")
-  @PreAuthorize("hasAuthority('edit_elements')")
+//  @PreAuthorize("hasAuthority('edit_elements')")
   public void remove(@RequestBody List<UUID> ids) {
     deleteBasicElementService.deleteAllByIdIn(ids);
   }

@@ -6,7 +6,7 @@ import pl.dabrowski.electrotools.project.Project;
 import pl.dabrowski.electrotools.project.repository.ProjectRepository;
 import pl.dabrowski.electrotools.project.service.exists.ExistProjectService;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor

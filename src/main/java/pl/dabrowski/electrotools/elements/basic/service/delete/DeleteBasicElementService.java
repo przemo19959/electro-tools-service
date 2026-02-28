@@ -8,7 +8,7 @@ import pl.dabrowski.electrotools.elements.overcurrentprotection.service.delete.D
 import pl.dabrowski.electrotools.elements.rcdelement.service.delete.DeleteRcdElementService;
 import pl.dabrowski.electrotools.elements.terminalelement.service.delete.DeleteTerminalElementService;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 

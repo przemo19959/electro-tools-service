@@ -6,7 +6,7 @@ import pl.dabrowski.electrotools.elements.abstractelement.UpdateAbstractElementD
 import pl.dabrowski.electrotools.elements.basic.BasicElement;
 import pl.dabrowski.electrotools.elements.basic.repository.BasicElementRepository;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 

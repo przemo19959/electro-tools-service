@@ -1,6 +1,7 @@
 package pl.dabrowski.electrotools.project;
 
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/projects")
+@RequestMapping("/api/v1/projects")
 @RequiredArgsConstructor
 public class ProjectController {
   private final ReadProjectService readProjectService;
@@ -29,38 +30,38 @@ public class ProjectController {
   private final DeleteProjectService deleteProjectService;
 
   @GetMapping
-  @PreAuthorize("hasAuthority('read_projects')")
+//  @PreAuthorize("hasAuthority('read_projects')")
   public ResponseEntity<List<ReadProjectDto>> findAll() {
     return ResponseEntity.ok(readProjectService.findAll());
   }
 
   @GetMapping("/page")
-  @PreAuthorize("hasAuthority('read_projects')")
-  public ResponseEntity<Page<ReadProjectDto>> pageAll(Pageable pageable,
+//  @PreAuthorize("hasAuthority('read_projects')")
+  public ResponseEntity<Page<ReadProjectDto>> pageAll(@ParameterObject Pageable pageable,
                                                       @RequestParam Optional<String> query) {
     return ResponseEntity.ok(readProjectService.pageAll(pageable, query));
   }
 
   @GetMapping("/{projectId}")
-  @PreAuthorize("hasAuthority('read_projects')")
+//  @PreAuthorize("hasAuthority('read_projects')")
   public ResponseEntity<ReadProjectDto> findById(@PathVariable UUID projectId) {
     return ResponseEntity.ok(readProjectService.findById(projectId));
   }
 
   @PostMapping
-  @PreAuthorize("hasAuthority('edit_projects')")
+//  @PreAuthorize("hasAuthority('edit_projects')")
   public ResponseEntity<ReadProjectDto> create(@RequestBody CreateProjectDto dto) {
     return ResponseEntity.status(HttpStatus.CREATED).body(createProjectService.create(dto).toDto());
   }
 
   @PutMapping("/{projectId}")
-  @PreAuthorize("hasAuthority('edit_projects')")
+//  @PreAuthorize("hasAuthority('edit_projects')")
   public ResponseEntity<ReadProjectDto> update(@PathVariable UUID projectId, @RequestBody UpdateProjectDto dto) {
     return ResponseEntity.ok(updateProjectService.update(projectId, dto).toDto());
   }
 
   @DeleteMapping("/{projectId}")
-  @PreAuthorize("hasAuthority('edit_projects')")
+//  @PreAuthorize("hasAuthority('edit_projects')")
   public ResponseEntity<Void> deleteById(@PathVariable UUID projectId) {
     deleteProjectService.deleteById(projectId);
     return ResponseEntity.ok().build();

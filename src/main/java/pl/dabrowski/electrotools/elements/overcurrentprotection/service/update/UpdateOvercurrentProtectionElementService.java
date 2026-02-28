@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.OvercurrentProtectionElement;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.repository.OvercurrentProtectionElementRepository;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 

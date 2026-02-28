@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/terminalElements")
+@RequestMapping("/api/v1/terminalElements")
 @RequiredArgsConstructor
 public class TerminalElementController {
   private final CreateTerminalElementService createTerminalElementService;
@@ -24,19 +24,19 @@ public class TerminalElementController {
   private final DeleteTerminalElementService deleteTerminalElementService;
 
   @PostMapping
-  @PreAuthorize("hasAuthority('edit_elements')")
+//  @PreAuthorize("hasAuthority('edit_elements')")
   public ResponseEntity<ReadAbstractElementDto> create(@RequestBody CreateTerminalElementDto dto) {
     return ResponseEntity.status(HttpStatus.CREATED).body(createTerminalElementService.create(dto).toDto(Collections.emptyList()));
   }
 
   @PutMapping("/{terminalElementId}")
-  @PreAuthorize("hasAuthority('edit_elements')")
+//  @PreAuthorize("hasAuthority('edit_elements')")
   public ResponseEntity<ReadAbstractElementDto> update(@PathVariable UUID terminalElementId, @RequestBody UpdateTerminalElementDto dto) {
     return ResponseEntity.ok(updateTerminalElementService.update(terminalElementId, dto).toDto(Collections.emptyList()));
   }
 
   @DeleteMapping("/{terminalElementId}")
-  @PreAuthorize("hasAuthority('edit_elements')")
+//  @PreAuthorize("hasAuthority('edit_elements')")
   public ResponseEntity<Void> deleteById(@PathVariable UUID terminalElementId) {
     deleteTerminalElementService.deleteById(terminalElementId);
     return ResponseEntity.ok().build();

@@ -9,7 +9,7 @@ import pl.dabrowski.electrotools.elements.terminalelement.repository.TerminalEle
 import pl.dabrowski.electrotools.project.Project;
 import pl.dabrowski.electrotools.project.repository.ProjectRepository;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor

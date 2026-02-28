@@ -6,11 +6,11 @@ import pl.dabrowski.electrotools.wire.service.create.CreateWireDto;
 import pl.dabrowski.electrotools.wire.service.read.ReadWireDto;
 import pl.dabrowski.electrotools.wire.service.update.UpdateWireDto;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.Positive;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.Positive;
 
 @Getter
 @Embeddable
