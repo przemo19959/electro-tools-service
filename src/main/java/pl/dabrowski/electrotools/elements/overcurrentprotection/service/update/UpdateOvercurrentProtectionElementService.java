@@ -2,12 +2,16 @@ package pl.dabrowski.electrotools.elements.overcurrentprotection.service.update;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.dabrowski.electrotools.elements.basic.service.update.UpdateBasicElementPositionDto;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.OvercurrentProtectionElement;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.repository.OvercurrentProtectionElementRepository;
 
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,5 +24,27 @@ public class UpdateOvercurrentProtectionElementService {
         .map(v -> v.update(dto))
         .map(overcurrentProtectionElementRepository::save)
         .orElseThrow(() -> new NoSuchElementException("No OvercurrentProtectionElement with id: " + overcurrentProtectionElementId + ""));
+  }
+
+  public void updatePositions(List<UpdateBasicElementPositionDto> changes) {
+    if (changes == null || changes.isEmpty()) {
+      return;
+    }
+
+    var ids = changes.stream()
+        .map(UpdateBasicElementPositionDto::getElementId)
+        .collect(Collectors.toSet());
+
+    var elementsById = overcurrentProtectionElementRepository.findAllById(ids).stream()
+        .collect(Collectors.toMap(OvercurrentProtectionElement::getId, Function.identity()));
+
+    for (var change : changes) {
+      var element = elementsById.get(change.getElementId());
+      if (element != null) {
+        element.updatePosition(change.getX(), change.getY());
+      }
+    }
+
+    overcurrentProtectionElementRepository.saveAll(elementsById.values());
   }
 }

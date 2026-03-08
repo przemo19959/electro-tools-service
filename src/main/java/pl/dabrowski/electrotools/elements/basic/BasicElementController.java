@@ -11,6 +11,7 @@ import pl.dabrowski.electrotools.elements.abstractelement.UpdateAbstractElementD
 import pl.dabrowski.electrotools.elements.basic.service.create.CreateBasicElementService;
 import pl.dabrowski.electrotools.elements.basic.service.delete.DeleteBasicElementService;
 import pl.dabrowski.electrotools.elements.basic.service.read.ReadBasicElementService;
+import pl.dabrowski.electrotools.elements.basic.service.update.UpdateBasicElementPositionDto;
 import pl.dabrowski.electrotools.elements.basic.service.update.UpdateBasicElementService;
 
 import java.util.Collections;
@@ -42,6 +43,14 @@ public class BasicElementController {
 //  @PreAuthorize("hasAuthority('edit_elements')")
   public ResponseEntity<ReadAbstractElementDto> update(@PathVariable UUID basicElementId, @RequestBody UpdateAbstractElementDto dto) {
     return ResponseEntity.ok(updateBasicElementService.update(basicElementId, dto).toDto(Collections.emptyList()));
+  }
+
+  @PutMapping("/positions")
+//  @PreAuthorize("hasAuthority('edit_elements')")
+  public ResponseEntity<Void> updatePositions(@RequestBody List<UpdateBasicElementPositionDto> changes) {
+    updateBasicElementService.updatePositions(changes);
+
+    return ResponseEntity.ok().build();
   }
 
   @PostMapping("/delete")

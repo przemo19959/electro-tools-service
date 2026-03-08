@@ -32,6 +32,13 @@ public class BasicElement extends AbstractElement {
     return this;
   }
 
+  public BasicElement updatePosition(double x, double y) {
+    this.x = x;
+    this.y = y;
+
+    return this;
+  }
+
   @Override
   public ReadAbstractElementDto toDto(List<ReadAbstractElementDto> children) {
     ReadAbstractElementDto dto = new ReadAbstractElementDto();

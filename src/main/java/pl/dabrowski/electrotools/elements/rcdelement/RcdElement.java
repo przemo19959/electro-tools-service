@@ -58,6 +58,13 @@ public class RcdElement extends AbstractElement {
     return this;
   }
 
+  public RcdElement updatePosition(double x, double y) {
+    this.x = x;
+    this.y = y;
+
+    return this;
+  }
+
   @Override
   public ReadAbstractElementDto toDto(List<ReadAbstractElementDto> children) {
     ReadRcdElementDto dto = new ReadRcdElementDto();

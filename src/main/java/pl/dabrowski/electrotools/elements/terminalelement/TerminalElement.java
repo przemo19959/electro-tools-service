@@ -44,6 +44,13 @@ public class TerminalElement extends AbstractElement {
     return this;
   }
 
+  public TerminalElement updatePosition(double x, double y) {
+    this.x = x;
+    this.y = y;
+
+    return this;
+  }
+
   @Override
   public ReadAbstractElementDto toDto(List<ReadAbstractElementDto> children) {
     ReadTerminalElementDto dto = new ReadTerminalElementDto();

@@ -50,6 +50,13 @@ public class OvercurrentProtectionElement extends AbstractElement {
     return this;
   }
 
+  public OvercurrentProtectionElement updatePosition(double x, double y) {
+    this.x = x;
+    this.y = y;
+
+    return this;
+  }
+
   @Override
   public ReadAbstractElementDto toDto(List<ReadAbstractElementDto> children) {
     ReadOvercurrentProtectionElementDto dto = new ReadOvercurrentProtectionElementDto();

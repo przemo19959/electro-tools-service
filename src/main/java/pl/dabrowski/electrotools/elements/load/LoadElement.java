@@ -62,6 +62,13 @@ public class LoadElement extends AbstractElement {
     return this;
   }
 
+  public LoadElement updatePosition(double x, double y) {
+    this.x = x;
+    this.y = y;
+
+    return this;
+  }
+
   @Override
   public ReadAbstractElementDto toDto(List<ReadAbstractElementDto> children) {
     ReadLoadElementDto dto = new ReadLoadElementDto();
