@@ -22,7 +22,7 @@ public class ReadBasicElementService {
   private final ReadTerminalElementService readTerminalElementService;
   private final ReadRcdElementService readRcdElementService;
 
-  public List<ReadAbstractElementDto> getTree(UUID projectId) {
+  public List<ReadAbstractElementDto> getTrees(UUID projectId) {
     List<AbstractElement> elements = new ArrayList<>();
 
     elements.addAll(basicElementRepository.findAllByProjectId(projectId));
@@ -31,24 +31,24 @@ public class ReadBasicElementService {
     elements.addAll(readTerminalElementService.findAll(projectId));
     elements.addAll(readRcdElementService.findAll(projectId));
 
-    Map<Optional<UUID>, List<AbstractElement>> groupedByParent = elements.stream()
+    Map<Optional<UUID>, List<AbstractElement>> parentToElements = elements.stream()
         .collect(Collectors.groupingBy(v -> Optional.ofNullable(v.getParentId())));
 
     List<ReadAbstractElementDto> result = new ArrayList<>();
-    if (groupedByParent.containsKey(Optional.empty())) {
-      groupedByParent.get(Optional.empty()).forEach(v -> result.add(treeChildren(v, groupedByParent)));
+    if (parentToElements.containsKey(Optional.empty())) {
+      parentToElements.get(Optional.empty()).forEach(v -> result.add(treeChildren(v, parentToElements)));
     }
 
     return result;
   }
 
   private ReadAbstractElementDto treeChildren(AbstractElement parent,
-                                              Map<Optional<UUID>, List<AbstractElement>> childrenByParent) {
-    List<AbstractElement> children = childrenByParent.get(Optional.ofNullable(parent.getId()));
+                                              Map<Optional<UUID>, List<AbstractElement>> parentToElements) {
+    var children = parentToElements.get(Optional.ofNullable(parent.getId()));
     if (children == null) {
       return parent.toDto(Collections.emptyList());
     } else {
-      return parent.toDto(children.stream().map(v -> treeChildren(v, childrenByParent)).toList());
+      return parent.toDto(children.stream().map(v -> treeChildren(v, parentToElements)).toList());
     }
   }
 }

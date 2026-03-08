@@ -1,33 +1,32 @@
 package pl.dabrowski.electrotools.wire;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import pl.dabrowski.electrotools.wire.phase.PhaseType;
 import pl.dabrowski.electrotools.wire.service.create.CreateWireDto;
 import pl.dabrowski.electrotools.wire.service.read.ReadWireDto;
 import pl.dabrowski.electrotools.wire.service.update.UpdateWireDto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.Positive;
-
 @Getter
 @Embeddable
 public class Wire {
-  @Enumerated(value = EnumType.STRING)
+  @Enumerated(EnumType.STRING)
   @Column(name = "diameter")
   private WireDiameter diameter;
 
-  @Enumerated(value = EnumType.STRING)
+  @Enumerated(EnumType.STRING)
   @Column(name = "placement")
   private PlacementType placement;
 
-  @Enumerated(value = EnumType.STRING)
+  @Enumerated(EnumType.STRING)
   @Column(name = "wire_type")
   private WireType wireType;
 
-  @Enumerated(value = EnumType.STRING)
+  @Enumerated(EnumType.STRING)
   @Column(name = "phase")
   private PhaseType phase;
 
