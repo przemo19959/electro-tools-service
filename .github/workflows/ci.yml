@@ -16,7 +16,8 @@ jobs:
           - name: Setup Java JDK
             uses: actions/setup-java@v5.2.0
             with:
-                java-version: 25.0.2
+                java-version: 25
+                distribution: corretto
 
           - name: build project
             run: mvn clean package
