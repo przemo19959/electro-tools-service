@@ -1,11 +1,8 @@
 package pl.dabrowski.electrotools.project.service.create;
 
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
 
-@Getter
-@Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor
-public class CreateProjectDto {
-  private String name;
+public record CreateProjectDto(
+        @NotBlank String name
+) {
 }

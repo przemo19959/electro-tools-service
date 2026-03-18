@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import pl.dabrowski.electrotools.elements.basic.QBasicElement;
 import pl.dabrowski.electrotools.elements.load.QLoadElement;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.QOvercurrentProtectionElement;
@@ -22,7 +24,6 @@ import pl.dabrowski.electrotools.project.QProject;
 import pl.dabrowski.electrotools.project.repository.ProjectRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -93,6 +94,6 @@ public class ReadProjectService {
     return projectRepository
         .findById(projectId)
         .map(Project::toDto)
-        .orElseThrow(() -> new NoSuchElementException("No Project with id: " + projectId + ""));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No Project with id: " + projectId + ""));
   }
 }

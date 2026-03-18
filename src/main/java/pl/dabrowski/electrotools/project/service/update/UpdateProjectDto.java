@@ -1,11 +1,8 @@
 package pl.dabrowski.electrotools.project.service.update;
 
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
 
-@Getter
-@Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor
-public class UpdateProjectDto {
-  private String name;
+public record UpdateProjectDto(
+        @NotBlank String name
+) {
 }

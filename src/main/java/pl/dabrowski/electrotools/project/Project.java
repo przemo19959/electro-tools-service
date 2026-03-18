@@ -1,5 +1,6 @@
 package pl.dabrowski.electrotools.project;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.envers.Audited;
 import org.springframework.data.annotation.CreatedBy;
@@ -11,7 +12,6 @@ import pl.dabrowski.electrotools.project.service.create.CreateProjectDto;
 import pl.dabrowski.electrotools.project.service.read.ReadProjectDto;
 import pl.dabrowski.electrotools.project.service.update.UpdateProjectDto;
 
-import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -51,12 +51,12 @@ public class Project {
 
   public static Project create(CreateProjectDto dto) {
     final Project project = new Project();
-    project.name = dto.getName();
+    project.name = dto.name();
     return project;
   }
 
   public Project update(UpdateProjectDto dto) {
-    this.name = dto.getName();
+    this.name = dto.name();
     return this;
   }
 
