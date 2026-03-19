@@ -2,13 +2,14 @@ package pl.dabrowski.electrotools.elements.load.service.update;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import pl.dabrowski.electrotools.elements.basic.service.update.UpdateBasicElementPositionDto;
 import pl.dabrowski.electrotools.elements.load.LoadElement;
 import pl.dabrowski.electrotools.elements.load.repository.LoadElementRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class UpdateLoadElementService {
     return loadElementRepository.findById(loadElementId)
         .map(v -> v.update(dto))
         .map(loadElementRepository::save)
-        .orElseThrow(() -> new NoSuchElementException("No LoadElement with id: " + loadElementId + ""));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No LoadElement with id: " + loadElementId + ""));
   }
 
   public void updatePositions(List<UpdateBasicElementPositionDto> changes) {

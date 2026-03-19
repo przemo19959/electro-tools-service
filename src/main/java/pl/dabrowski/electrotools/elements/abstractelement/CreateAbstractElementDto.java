@@ -1,6 +1,5 @@
 package pl.dabrowski.electrotools.elements.abstractelement;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,7 @@ import pl.dabrowski.electrotools.wire.service.create.CreateWireDto;
 import java.util.UUID;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @NoArgsConstructor
 public class CreateAbstractElementDto {
   protected double x;

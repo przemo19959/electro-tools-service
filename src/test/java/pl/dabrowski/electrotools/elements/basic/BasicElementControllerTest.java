@@ -38,31 +38,19 @@ public class BasicElementControllerTest extends IntegrationTest {
     private TestCreateDto defaultCreateDto;
 
     // ---------------------------------------------------------------
-    // Test-specific DTOs – work around private all-args constructors
-    // by subclassing and setting protected fields directly.
+    // Test-specific DTOs extending abstract DTOs with concise constructors.
     // ---------------------------------------------------------------
     static class TestCreateDto extends CreateAbstractElementDto {
         TestCreateDto(double x, double y, String label, UUID projectId) {
-            this.x = x;
-            this.y = y;
-            this.label = label;
-            this.projectId = projectId;
+            super(x, y, label, null, null, projectId);
         }
 
         TestCreateDto(double x, double y, String label, UUID parentId, UUID projectId) {
-            this.x = x;
-            this.y = y;
-            this.label = label;
-            this.parentId = parentId;
-            this.projectId = projectId;
+            super(x, y, label, parentId, null, projectId);
         }
 
         TestCreateDto(double x, double y, String label, UUID projectId, CreateWireDto wire) {
-            this.x = x;
-            this.y = y;
-            this.label = label;
-            this.projectId = projectId;
-            this.wire = wire;
+            super(x, y, label, null, wire, projectId);
         }
     }
 

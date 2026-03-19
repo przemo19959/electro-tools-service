@@ -3,7 +3,6 @@ package pl.dabrowski.electrotools.elements.load;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.dabrowski.electrotools.elements.abstractelement.ReadAbstractElementDto;
 import pl.dabrowski.electrotools.elements.load.service.create.CreateLoadElementDto;
@@ -17,9 +16,11 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/loadElements")
+@RequestMapping(LoadElementController.BASE_URL)
 @RequiredArgsConstructor
 public class LoadElementController {
+    public static final String BASE_URL = "/api/v1/loadElements";
+
     private final CreateLoadElementService createLoadElementService;
     private final UpdateLoadElementService updateLoadElementService;
     private final DeleteLoadElementService deleteLoadElementService;

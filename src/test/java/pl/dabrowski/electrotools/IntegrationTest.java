@@ -7,6 +7,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import pl.dabrowski.electrotools.api.BasicElementApi;
+import pl.dabrowski.electrotools.api.LoadElementApi;
 import pl.dabrowski.electrotools.api.ProjectApi;
 
 import static io.restassured.RestAssured.given;
@@ -40,5 +41,9 @@ public class IntegrationTest {
 
     protected BasicElementApi basicElementApi() {
         return new BasicElementApi(givenRequest());
+    }
+
+    protected LoadElementApi loadElementApi() {
+        return new LoadElementApi(givenRequest());
     }
 }

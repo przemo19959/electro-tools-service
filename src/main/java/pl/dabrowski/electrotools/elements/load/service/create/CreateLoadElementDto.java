@@ -1,6 +1,5 @@
 package pl.dabrowski.electrotools.elements.load.service.create;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,7 @@ import pl.dabrowski.electrotools.elements.abstractelement.CreateAbstractElementD
 import pl.dabrowski.electrotools.elements.load.Config;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @NoArgsConstructor
 public class CreateLoadElementDto extends CreateAbstractElementDto {
   private double drawPower;
