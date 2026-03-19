@@ -1,12 +1,12 @@
 package pl.dabrowski.electrotools.elements.load.service.update;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dabrowski.electrotools.elements.basic.service.update.UpdateBasicElementPositionDto;
 import pl.dabrowski.electrotools.elements.load.LoadElement;
 import pl.dabrowski.electrotools.elements.load.repository.LoadElementRepository;
 
-import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -32,16 +32,16 @@ public class UpdateLoadElementService {
     }
 
     var ids = changes.stream()
-        .map(UpdateBasicElementPositionDto::getElementId)
+            .map(UpdateBasicElementPositionDto::elementId)
         .collect(Collectors.toSet());
 
     var elementsById = loadElementRepository.findAllById(ids).stream()
         .collect(Collectors.toMap(LoadElement::getId, Function.identity()));
 
     for (var change : changes) {
-      var element = elementsById.get(change.getElementId());
+      var element = elementsById.get(change.elementId());
       if (element != null) {
-        element.updatePosition(change.getX(), change.getY());
+        element.updatePosition(change.x(), change.y());
       }
     }
 

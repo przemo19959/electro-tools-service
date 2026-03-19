@@ -1,14 +1,10 @@
 package pl.dabrowski.electrotools.elements.basic.service.update;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import pl.dabrowski.electrotools.elements.abstractelement.UpdateAbstractElementDto;
 import pl.dabrowski.electrotools.elements.basic.BasicElement;
 import pl.dabrowski.electrotools.elements.basic.repository.BasicElementRepository;
@@ -16,6 +12,11 @@ import pl.dabrowski.electrotools.elements.load.service.update.UpdateLoadElementS
 import pl.dabrowski.electrotools.elements.overcurrentprotection.service.update.UpdateOvercurrentProtectionElementService;
 import pl.dabrowski.electrotools.elements.rcdelement.service.update.UpdateRcdElementService;
 import pl.dabrowski.electrotools.elements.terminalelement.service.update.UpdateTerminalElementService;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,11 +28,11 @@ public class UpdateBasicElementService {
   private final UpdateTerminalElementService updateTerminalElementService;
   private final UpdateRcdElementService updateRcdElementService;
 
-  public BasicElement update(UUID loadElementId, UpdateAbstractElementDto dto) {
-    return basicElementRepository.findById(loadElementId)
+  public BasicElement update(UUID elementId, UpdateAbstractElementDto dto) {
+    return basicElementRepository.findById(elementId)
         .map(v -> v.update(dto))
         .map(basicElementRepository::save)
-        .orElseThrow(() -> new java.util.NoSuchElementException("No BasicElement with id: " + loadElementId + ""));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No BasicElement with id: " + elementId + ""));
   }
 
   public void updatePositions(List<UpdateBasicElementPositionDto> changes) {
@@ -40,16 +41,16 @@ public class UpdateBasicElementService {
     }
 
     var ids = changes.stream()
-        .map(UpdateBasicElementPositionDto::getElementId)
+            .map(UpdateBasicElementPositionDto::elementId)
         .collect(Collectors.toSet());
 
     var elementsById = basicElementRepository.findAllById(ids).stream()
         .collect(Collectors.toMap(BasicElement::getId, Function.identity()));
 
     for (var change : changes) {
-      var element = elementsById.get(change.getElementId());
+      var element = elementsById.get(change.elementId());
       if (element != null) {
-        element.updatePosition(change.getX(), change.getY());
+        element.updatePosition(change.x(), change.y());
       }
     }
 

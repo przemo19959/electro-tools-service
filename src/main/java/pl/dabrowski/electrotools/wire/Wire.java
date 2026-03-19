@@ -62,12 +62,6 @@ public class Wire {
   }
 
   public ReadWireDto toDto() {
-    return ReadWireDto.builder()
-        .diameter(diameter)
-        .placement(placement)
-        .type(wireType)
-        .phase(phase)
-        .length(length)
-        .build();
+    return new ReadWireDto(diameter, placement, wireType, phase, length);
   }
 }

@@ -3,10 +3,9 @@ package pl.dabrowski.electrotools.elements.basic;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.dabrowski.electrotools.elements.abstractelement.ReadAbstractElementDto;
 import pl.dabrowski.electrotools.elements.abstractelement.CreateAbstractElementDto;
+import pl.dabrowski.electrotools.elements.abstractelement.ReadAbstractElementDto;
 import pl.dabrowski.electrotools.elements.abstractelement.UpdateAbstractElementDto;
 import pl.dabrowski.electrotools.elements.basic.service.create.CreateBasicElementService;
 import pl.dabrowski.electrotools.elements.basic.service.delete.DeleteBasicElementService;
@@ -19,9 +18,11 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/elements")
+@RequestMapping(BasicElementController.BASE_URL)
 @RequiredArgsConstructor
 public class BasicElementController {
+  public static final String BASE_URL = "/api/v1/elements";
+
   private final ReadBasicElementService readBasicElementService;
   private final CreateBasicElementService createBasicElementService;
   private final UpdateBasicElementService updateBasicElementService;

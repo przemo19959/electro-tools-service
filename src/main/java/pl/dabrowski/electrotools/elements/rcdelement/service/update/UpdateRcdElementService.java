@@ -1,5 +1,6 @@
 package pl.dabrowski.electrotools.elements.rcdelement.service.update;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,6 @@ import pl.dabrowski.electrotools.elements.basic.service.update.UpdateBasicElemen
 import pl.dabrowski.electrotools.elements.rcdelement.RcdElement;
 import pl.dabrowski.electrotools.elements.rcdelement.repository.RcdElementRepository;
 
-import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -39,16 +39,16 @@ public class UpdateRcdElementService {
     }
 
     var ids = changes.stream()
-        .map(UpdateBasicElementPositionDto::getElementId)
+            .map(UpdateBasicElementPositionDto::elementId)
         .collect(Collectors.toSet());
 
     var elementsById = rcdElementRepository.findAllById(ids).stream()
         .collect(Collectors.toMap(RcdElement::getId, Function.identity()));
 
     for (var change : changes) {
-      var element = elementsById.get(change.getElementId());
+      var element = elementsById.get(change.elementId());
       if (element != null) {
-        element.updatePosition(change.getX(), change.getY());
+        element.updatePosition(change.x(), change.y());
       }
     }
 
