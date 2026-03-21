@@ -10,7 +10,6 @@ import pl.dabrowski.electrotools.elements.terminalelement.TerminalElement;
 import pl.dabrowski.electrotools.elements.terminalelement.repository.TerminalElementRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -29,7 +28,7 @@ public class UpdateTerminalElementService {
     return terminalElementRepository.findById(terminalElementId)
         .map(v -> v.update(dto))
         .map(terminalElementRepository::save)
-        .orElseThrow(() -> new NoSuchElementException("No TerminalElement with id: " + terminalElementId + ""));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No TerminalElement with id: " + terminalElementId));
   }
 
   public void updatePositions(List<UpdateBasicElementPositionDto> changes) {

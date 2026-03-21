@@ -10,7 +10,6 @@ import pl.dabrowski.electrotools.elements.rcdelement.RcdElement;
 import pl.dabrowski.electrotools.elements.rcdelement.repository.RcdElementRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -30,7 +29,7 @@ public class UpdateRcdElementService {
     return rcdElementRepository.findById(rcdElementId)
         .map(v -> v.update(dto))
         .map(rcdElementRepository::save)
-        .orElseThrow(() -> new NoSuchElementException("No RcdElement with id: " + rcdElementId + ""));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No RcdElement with id: " + rcdElementId));
   }
 
   public void updatePositions(List<UpdateBasicElementPositionDto> changes) {

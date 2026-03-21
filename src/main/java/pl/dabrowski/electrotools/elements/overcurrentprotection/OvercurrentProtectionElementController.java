@@ -3,7 +3,6 @@ package pl.dabrowski.electrotools.elements.overcurrentprotection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.dabrowski.electrotools.elements.abstractelement.ReadAbstractElementDto;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.service.create.CreateOvercurrentProtectionElementDto;
@@ -16,9 +15,11 @@ import java.util.Collections;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/overcurrentProtectionElements")
+@RequestMapping(OvercurrentProtectionElementController.BASE_URL)
 @RequiredArgsConstructor
 public class OvercurrentProtectionElementController {
+  public static final String BASE_URL = "/api/v1/overcurrentProtectionElements";
+
   private final CreateOvercurrentProtectionElementService createOvercurrentProtectionElementService;
   private final UpdateOvercurrentProtectionElementService updateOvercurrentProtectionElementService;
   private final DeleteOvercurrentProtectionElementService deleteOvercurrentProtectionElementService;

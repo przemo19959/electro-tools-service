@@ -6,9 +6,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
-import pl.dabrowski.electrotools.api.BasicElementApi;
-import pl.dabrowski.electrotools.api.LoadElementApi;
-import pl.dabrowski.electrotools.api.ProjectApi;
+import pl.dabrowski.electrotools.api.*;
 
 import static io.restassured.RestAssured.given;
 
@@ -45,5 +43,17 @@ public class IntegrationTest {
 
     protected LoadElementApi loadElementApi() {
         return new LoadElementApi(givenRequest());
+    }
+
+    protected OvercurrentProtectionElementApi overcurrentProtectionElementApi() {
+        return new OvercurrentProtectionElementApi(givenRequest());
+    }
+
+    protected RcdElementApi rcdElementApi() {
+        return new RcdElementApi(givenRequest());
+    }
+
+    protected TerminalElementApi terminalElementApi() {
+        return new TerminalElementApi(givenRequest());
     }
 }

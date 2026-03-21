@@ -3,7 +3,6 @@ package pl.dabrowski.electrotools.elements.rcdelement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.dabrowski.electrotools.elements.abstractelement.ReadAbstractElementDto;
 import pl.dabrowski.electrotools.elements.rcdelement.service.create.CreateRcdElementDto;
@@ -17,9 +16,11 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/rcdElements")
+@RequestMapping(RcdElementController.BASE_URL)
 @RequiredArgsConstructor
 public class RcdElementController {
+  public static final String BASE_URL = "/api/v1/rcdElements";
+
   private final CreateRcdElementService createRcdElementService;
   private final UpdateRcdElementService updateRcdElementService;
   private final DeleteRcdElementService deleteRcdElementService;

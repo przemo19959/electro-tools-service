@@ -2,13 +2,14 @@ package pl.dabrowski.electrotools.elements.overcurrentprotection.service.update;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import pl.dabrowski.electrotools.elements.basic.service.update.UpdateBasicElementPositionDto;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.OvercurrentProtectionElement;
 import pl.dabrowski.electrotools.elements.overcurrentprotection.repository.OvercurrentProtectionElementRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class UpdateOvercurrentProtectionElementService {
     return overcurrentProtectionElementRepository.findById(overcurrentProtectionElementId)
         .map(v -> v.update(dto))
         .map(overcurrentProtectionElementRepository::save)
-        .orElseThrow(() -> new NoSuchElementException("No OvercurrentProtectionElement with id: " + overcurrentProtectionElementId + ""));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No OvercurrentProtectionElement with id: " + overcurrentProtectionElementId));
   }
 
   public void updatePositions(List<UpdateBasicElementPositionDto> changes) {

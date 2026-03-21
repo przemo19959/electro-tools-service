@@ -3,7 +3,6 @@ package pl.dabrowski.electrotools.elements.terminalelement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.dabrowski.electrotools.elements.abstractelement.ReadAbstractElementDto;
 import pl.dabrowski.electrotools.elements.terminalelement.service.create.CreateTerminalElementDto;
@@ -17,9 +16,11 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/terminalElements")
+@RequestMapping(TerminalElementController.BASE_URL)
 @RequiredArgsConstructor
 public class TerminalElementController {
+  public static final String BASE_URL = "/api/v1/terminalElements";
+
   private final CreateTerminalElementService createTerminalElementService;
   private final UpdateTerminalElementService updateTerminalElementService;
   private final DeleteTerminalElementService deleteTerminalElementService;
