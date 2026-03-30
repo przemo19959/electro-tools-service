@@ -1,7 +1,9 @@
 package pl.dabrowski.electrotools;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +19,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pl.dabrowski.electrotools.security.SecurityAuditorAware;
 import pl.dabrowski.electrotools.security.SecurityConverter;
 
-import jakarta.persistence.EntityManager;
+import javax.sql.DataSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -26,15 +28,13 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 @RequiredArgsConstructor
 public class ElectroToolsApplication {
-  private final EntityManager entityManager;
-
-  public static void main(String[] args) {
+  static void main(String[] args) {
     SpringApplication.run(ElectroToolsApplication.class, args);
   }
 
   @Bean
-  public JPAQueryFactory jpaQueryFactory() {
-    return new JPAQueryFactory(entityManager);
+  public DSLContext dslContext(DataSource dataSource) {
+    return DSL.using(dataSource, SQLDialect.POSTGRES);
   }
 
   @Bean
