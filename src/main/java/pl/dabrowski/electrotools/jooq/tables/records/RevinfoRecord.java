@@ -6,7 +6,6 @@ package pl.dabrowski.electrotools.jooq.tables.records;
 
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
-
 import pl.dabrowski.electrotools.jooq.tables.Revinfo;
 
 

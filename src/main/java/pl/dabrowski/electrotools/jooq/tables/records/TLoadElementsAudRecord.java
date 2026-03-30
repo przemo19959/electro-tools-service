@@ -4,12 +4,11 @@
 package pl.dabrowski.electrotools.jooq.tables.records;
 
 
-import java.util.UUID;
-
 import org.jooq.Record2;
 import org.jooq.impl.UpdatableRecordImpl;
-
 import pl.dabrowski.electrotools.jooq.tables.TLoadElementsAud;
+
+import java.util.UUID;
 
 
 /**

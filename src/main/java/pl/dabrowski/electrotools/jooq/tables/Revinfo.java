@@ -92,11 +92,9 @@ public class Revinfo extends TableImpl<RevinfoRecord> {
     public static class RevinfoPath extends Revinfo implements Path<RevinfoRecord> {
 
         private static final long serialVersionUID = 1L;
-
         public <O extends Record> RevinfoPath(Table<O> path, ForeignKey<O, RevinfoRecord> childPath, InverseForeignKey<O, RevinfoRecord> parentPath) {
             super(path, childPath, parentPath);
         }
-
         private RevinfoPath(Name alias, Table<RevinfoRecord> aliased) {
             super(alias, aliased);
         }

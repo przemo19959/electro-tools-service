@@ -186,11 +186,9 @@ public class TOvercurrentProtectionElements extends TableImpl<TOvercurrentProtec
     public static class TOvercurrentProtectionElementsPath extends TOvercurrentProtectionElements implements Path<TOvercurrentProtectionElementsRecord> {
 
         private static final long serialVersionUID = 1L;
-
         public <O extends Record> TOvercurrentProtectionElementsPath(Table<O> path, ForeignKey<O, TOvercurrentProtectionElementsRecord> childPath, InverseForeignKey<O, TOvercurrentProtectionElementsRecord> parentPath) {
             super(path, childPath, parentPath);
         }
-
         private TOvercurrentProtectionElementsPath(Name alias, Table<TOvercurrentProtectionElementsRecord> aliased) {
             super(alias, aliased);
         }

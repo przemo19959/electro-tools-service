@@ -121,11 +121,9 @@ public class TLoadElementsAud extends TableImpl<TLoadElementsAudRecord> {
     public static class TLoadElementsAudPath extends TLoadElementsAud implements Path<TLoadElementsAudRecord> {
 
         private static final long serialVersionUID = 1L;
-
         public <O extends Record> TLoadElementsAudPath(Table<O> path, ForeignKey<O, TLoadElementsAudRecord> childPath, InverseForeignKey<O, TLoadElementsAudRecord> parentPath) {
             super(path, childPath, parentPath);
         }
-
         private TLoadElementsAudPath(Name alias, Table<TLoadElementsAudRecord> aliased) {
             super(alias, aliased);
         }

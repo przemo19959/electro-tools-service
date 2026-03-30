@@ -162,11 +162,9 @@ public class TBasicElements extends TableImpl<TBasicElementsRecord> {
     public static class TBasicElementsPath extends TBasicElements implements Path<TBasicElementsRecord> {
 
         private static final long serialVersionUID = 1L;
-
         public <O extends Record> TBasicElementsPath(Table<O> path, ForeignKey<O, TBasicElementsRecord> childPath, InverseForeignKey<O, TBasicElementsRecord> parentPath) {
             super(path, childPath, parentPath);
         }
-
         private TBasicElementsPath(Name alias, Table<TBasicElementsRecord> aliased) {
             super(alias, aliased);
         }

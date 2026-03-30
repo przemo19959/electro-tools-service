@@ -124,11 +124,9 @@ public class TProjects extends TableImpl<TProjectsRecord> {
     public static class TProjectsPath extends TProjects implements Path<TProjectsRecord> {
 
         private static final long serialVersionUID = 1L;
-
         public <O extends Record> TProjectsPath(Table<O> path, ForeignKey<O, TProjectsRecord> childPath, InverseForeignKey<O, TProjectsRecord> parentPath) {
             super(path, childPath, parentPath);
         }
-
         private TProjectsPath(Name alias, Table<TProjectsRecord> aliased) {
             super(alias, aliased);
         }

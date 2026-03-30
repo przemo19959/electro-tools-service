@@ -177,11 +177,9 @@ public class TRcdElements extends TableImpl<TRcdElementsRecord> {
     public static class TRcdElementsPath extends TRcdElements implements Path<TRcdElementsRecord> {
 
         private static final long serialVersionUID = 1L;
-
         public <O extends Record> TRcdElementsPath(Table<O> path, ForeignKey<O, TRcdElementsRecord> childPath, InverseForeignKey<O, TRcdElementsRecord> parentPath) {
             super(path, childPath, parentPath);
         }
-
         private TRcdElementsPath(Name alias, Table<TRcdElementsRecord> aliased) {
             super(alias, aliased);
         }

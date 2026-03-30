@@ -4,13 +4,12 @@
 package pl.dabrowski.electrotools.jooq.tables.records;
 
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
-
 import pl.dabrowski.electrotools.jooq.tables.TOvercurrentProtectionElements;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 /**

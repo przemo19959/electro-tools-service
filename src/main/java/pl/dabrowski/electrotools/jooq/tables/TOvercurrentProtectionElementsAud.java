@@ -113,11 +113,9 @@ public class TOvercurrentProtectionElementsAud extends TableImpl<TOvercurrentPro
     public static class TOvercurrentProtectionElementsAudPath extends TOvercurrentProtectionElementsAud implements Path<TOvercurrentProtectionElementsAudRecord> {
 
         private static final long serialVersionUID = 1L;
-
         public <O extends Record> TOvercurrentProtectionElementsAudPath(Table<O> path, ForeignKey<O, TOvercurrentProtectionElementsAudRecord> childPath, InverseForeignKey<O, TOvercurrentProtectionElementsAudRecord> parentPath) {
             super(path, childPath, parentPath);
         }
-
         private TOvercurrentProtectionElementsAudPath(Name alias, Table<TOvercurrentProtectionElementsAudRecord> aliased) {
             super(alias, aliased);
         }

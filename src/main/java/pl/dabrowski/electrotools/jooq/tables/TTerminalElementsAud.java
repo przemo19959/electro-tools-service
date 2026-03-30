@@ -103,11 +103,9 @@ public class TTerminalElementsAud extends TableImpl<TTerminalElementsAudRecord> 
     public static class TTerminalElementsAudPath extends TTerminalElementsAud implements Path<TTerminalElementsAudRecord> {
 
         private static final long serialVersionUID = 1L;
-
         public <O extends Record> TTerminalElementsAudPath(Table<O> path, ForeignKey<O, TTerminalElementsAudRecord> childPath, InverseForeignKey<O, TTerminalElementsAudRecord> parentPath) {
             super(path, childPath, parentPath);
         }
-
         private TTerminalElementsAudPath(Name alias, Table<TTerminalElementsAudRecord> aliased) {
             super(alias, aliased);
         }

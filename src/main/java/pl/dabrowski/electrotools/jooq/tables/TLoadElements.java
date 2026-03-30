@@ -187,11 +187,9 @@ public class TLoadElements extends TableImpl<TLoadElementsRecord> {
     public static class TLoadElementsPath extends TLoadElements implements Path<TLoadElementsRecord> {
 
         private static final long serialVersionUID = 1L;
-
         public <O extends Record> TLoadElementsPath(Table<O> path, ForeignKey<O, TLoadElementsRecord> childPath, InverseForeignKey<O, TLoadElementsRecord> parentPath) {
             super(path, childPath, parentPath);
         }
-
         private TLoadElementsPath(Name alias, Table<TLoadElementsRecord> aliased) {
             super(alias, aliased);
         }

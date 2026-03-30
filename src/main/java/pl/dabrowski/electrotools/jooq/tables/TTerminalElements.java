@@ -167,11 +167,9 @@ public class TTerminalElements extends TableImpl<TTerminalElementsRecord> {
     public static class TTerminalElementsPath extends TTerminalElements implements Path<TTerminalElementsRecord> {
 
         private static final long serialVersionUID = 1L;
-
         public <O extends Record> TTerminalElementsPath(Table<O> path, ForeignKey<O, TTerminalElementsRecord> childPath, InverseForeignKey<O, TTerminalElementsRecord> parentPath) {
             super(path, childPath, parentPath);
         }
-
         private TTerminalElementsPath(Name alias, Table<TTerminalElementsRecord> aliased) {
             super(alias, aliased);
         }
