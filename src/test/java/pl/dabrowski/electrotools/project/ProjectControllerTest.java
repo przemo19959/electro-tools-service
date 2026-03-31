@@ -11,18 +11,22 @@ import pl.dabrowski.electrotools.project.service.create.CreateProjectDto;
 import pl.dabrowski.electrotools.project.service.read.ReadProjectDto;
 import pl.dabrowski.electrotools.project.service.update.UpdateProjectDto;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("ProjectController Integration Tests")
-public class ProjectControllerTest extends IntegrationTest {
+class ProjectControllerTest extends IntegrationTest {
 
     private String projectId;
 
     @Autowired
     private ProjectRepository projectRepository;
+
     private final CreateProjectDto defaultCreateDto = new CreateProjectDto("Test Project");
 
     @BeforeEach
@@ -72,7 +76,7 @@ public class ProjectControllerTest extends IntegrationTest {
                     .as(new TypeRef<>() {
                     });
 
-            assertThat(projects).hasSize(0);
+            assertThat(projects).isEmpty();
         }
 
         @Test
@@ -91,12 +95,12 @@ public class ProjectControllerTest extends IntegrationTest {
             assertThat(firstProject.id()).isNotNull();
             assertThat(firstProject.name()).isEqualTo(defaultCreateDto.name());
             assertThat(firstProject.createdBy()).isEqualTo("system");
-            assertThat(firstProject.elementCount()).isEqualTo(0);
+            assertThat(firstProject.elementCount()).isZero();
         }
     }
 
     @Nested
-    @DisplayName("pageAll(int page, int size)")
+    @DisplayName("pageAll(int page, int size, String query)")
     class PageAllTests {
 
         @Test
@@ -111,17 +115,16 @@ public class ProjectControllerTest extends IntegrationTest {
                     });
 
             List<ReadProjectDto> content = response.getContent();
-            assertThat(content).isNotNull();
-            assertThat(content).hasSize(1);
+            assertThat(content).isNotNull().isEmpty();
 
             ReadProjectDto firstItem = content.getFirst();
             assertThat(firstItem.id()).isNotNull();
             assertThat(firstItem.name()).isEqualTo(defaultCreateDto.name());
             assertThat(firstItem.createdBy()).isEqualTo("system");
-            assertThat(firstItem.elementCount()).isEqualTo(0);
+            assertThat(firstItem.elementCount()).isZero();
 
 
-            assertThat(response.getNumber()).isEqualTo(0);
+            assertThat(response.getNumber()).isZero();
             assertThat(response.getSize()).isEqualTo(10);
             assertThat(response.getTotalElements()).isEqualTo(1);
         }
@@ -138,8 +141,7 @@ public class ProjectControllerTest extends IntegrationTest {
                     });
 
             List<ReadProjectDto> content = response.getContent();
-            assertThat(content).isNotNull();
-            assertThat(content.size()).isEqualTo(0);
+            assertThat(content).isNotNull().isEmpty();
 
             assertThat(response.getNumber()).isEqualTo(1);
             assertThat(response.getSize()).isEqualTo(5);
@@ -160,7 +162,7 @@ public class ProjectControllerTest extends IntegrationTest {
             List<ReadProjectDto> content = response.getContent();
             assertThat(content).isNotNull();
 
-            assertThat(response.getNumber()).isEqualTo(0);
+            assertThat(response.getNumber()).isZero();
             assertThat(response.getSize()).isEqualTo(1);
             assertThat(response.getTotalElements()).isEqualTo(1);
 
@@ -168,7 +170,7 @@ public class ProjectControllerTest extends IntegrationTest {
             assertThat(firstItem.id()).isNotNull();
             assertThat(firstItem.name()).isEqualTo(defaultCreateDto.name());
             assertThat(firstItem.createdBy()).isEqualTo("system");
-            assertThat(firstItem.elementCount()).isEqualTo(0);
+            assertThat(firstItem.elementCount()).isZero();
         }
 
         @Test
@@ -196,7 +198,245 @@ public class ProjectControllerTest extends IntegrationTest {
                     .as(new TypeRef<>() {
                     });
 
-            assertThat(response.getContent()).hasSize(0);
+            assertThat(response.getContent()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("Should return filtered projects when query matches name")
+        void testPageAll_WithQuery() {
+            CreateProjectDto matchingDto = new CreateProjectDto("Matching Project");
+            CreateProjectDto otherDto = new CreateProjectDto("Other Project");
+
+            projectApi().create(matchingDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(otherDto).then().statusCode(HttpStatus.CREATED.value());
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, matchingDto.name())
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getContent()).hasSize(1);
+            assertThat(response.getTotalElements()).isEqualTo(1);
+
+            ReadProjectDto firstItem = response.getContent().getFirst();
+            assertThat(firstItem.name()).isEqualTo(matchingDto.name());
+        }
+
+        @Test
+        @DisplayName("Should return empty page when query does not match any project")
+        void testPageAll_WithQueryNoMatch() {
+            String query = "missing-project";
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, query)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getContent()).isEmpty();
+            assertThat(response.getTotalElements()).isZero();
+        }
+
+        @Test
+        @DisplayName("Should return filtered project when query matches part of name ignoring case")
+        void testPageAll_WithQueryMatchingNamePartiallyIgnoringCase() {
+            CreateProjectDto matchingDto = new CreateProjectDto("Main Distribution Board");
+            CreateProjectDto otherDto = new CreateProjectDto("Garage Socket Circuit");
+            String query = "distribution";
+
+            projectApi().create(matchingDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(otherDto).then().statusCode(HttpStatus.CREATED.value());
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, query.toUpperCase())
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(1);
+            assertThat(response.getContent())
+                    .singleElement()
+                    .satisfies(project -> assertThat(project.name()).isEqualTo(matchingDto.name()));
+        }
+
+        @Test
+        @DisplayName("Should return all projects when query matches multiple names")
+        void testPageAll_WithQueryMatchingMultipleNames() {
+            String query = "Query Group";
+            CreateProjectDto firstMatchingDto = new CreateProjectDto(query + " Alpha");
+            CreateProjectDto secondMatchingDto = new CreateProjectDto(query + " Beta");
+            CreateProjectDto otherDto = new CreateProjectDto("Other Project");
+
+            projectApi().create(firstMatchingDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(secondMatchingDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(otherDto).then().statusCode(HttpStatus.CREATED.value());
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, query.toLowerCase())
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(2);
+            assertThat(response.getContent())
+                    .extracting(ReadProjectDto::name)
+                    .containsExactlyInAnyOrder(firstMatchingDto.name(), secondMatchingDto.name());
+        }
+
+        @Test
+        @DisplayName("Should return filtered project when query matches createdBy ignoring case")
+        void testPageAll_WithQueryMatchingCreatedByIgnoringCase() {
+            CreateProjectDto dtoOne = new CreateProjectDto("CreatedBy Filter A");
+            CreateProjectDto dtoTwo = new CreateProjectDto("CreatedBy Filter B");
+            projectApi().create(dtoOne).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(dtoTwo).then().statusCode(HttpStatus.CREATED.value());
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, "SYSTEM")
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(3);
+            assertThat(response.getContent())
+                    .extracting(ReadProjectDto::createdBy)
+                    .containsOnly("system");
+        }
+
+        @Test
+        @DisplayName("Should return filtered project when query matches modifiedBy ignoring case")
+        void testPageAll_WithQueryMatchingModifiedByIgnoringCase() {
+            CreateProjectDto dto = new CreateProjectDto("ModifiedBy Filter Project Updated");
+            projectApi()
+                    .create(dto)
+                    .then()
+                    .statusCode(HttpStatus.CREATED.value());
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, "SyStEm")
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getContent())
+                    .extracting(ReadProjectDto::modifiedBy)
+                    .containsOnly("system");
+            assertThat(response.getContent())
+                    .extracting(ReadProjectDto::name)
+                    .contains(dto.name());
+        }
+
+        @Test
+        @DisplayName("Should return filtered project when query matches modifiedDate exactly")
+        void testPageAll_WithQueryMatchingModifiedDateExactly() {
+            CreateProjectDto dto = new CreateProjectDto("Modified Date Exact Match");
+            String createdId = projectApi()
+                    .create(dto)
+                    .then()
+                    .statusCode(HttpStatus.CREATED.value())
+                    .extract()
+                    .path("id")
+                    .toString();
+
+            ReadProjectDto createdProject = projectApi()
+                    .findById(createdId)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(ReadProjectDto.class);
+
+            String query = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                    .withZone(ZoneOffset.UTC)
+                    .format(createdProject.modifiedDate());
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, query)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isGreaterThanOrEqualTo(1);
+            assertThat(response.getContent())
+                    .extracting(ReadProjectDto::name)
+                    .contains(dto.name());
+        }
+
+        @Test
+        @DisplayName("Should return filtered projects when query matches modifiedDate partially")
+        void testPageAll_WithQueryMatchingModifiedDatePartially() {
+            CreateProjectDto firstDto = new CreateProjectDto("Modified Date Match One");
+            CreateProjectDto secondDto = new CreateProjectDto("Modified Date Match Two");
+            projectApi().create(firstDto).then().statusCode(HttpStatus.CREATED.value());
+            String secondId = projectApi()
+                    .create(secondDto)
+                    .then()
+                    .statusCode(HttpStatus.CREATED.value())
+                    .extract()
+                    .path("id")
+                    .toString();
+
+            ReadProjectDto secondProject = projectApi()
+                    .findById(secondId)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(ReadProjectDto.class);
+
+            Instant modifiedDate = secondProject.modifiedDate();
+            String query = DateTimeFormatter.ofPattern("yyyy-MM")
+                    .withZone(ZoneOffset.UTC)
+                    .format(modifiedDate);
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, query)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isGreaterThanOrEqualTo(2);
+            assertThat(response.getContent())
+                    .extracting(ReadProjectDto::name)
+                    .contains(firstDto.name(), secondDto.name());
+        }
+
+        @Test
+        @DisplayName("Should return projects matched across different fields")
+        void testPageAll_WithQueryMatchingAcrossDifferentFields() {
+            String query = "sys";
+            CreateProjectDto nameMatchingDto = new CreateProjectDto("Syst Named Project");
+            CreateProjectDto otherDto = new CreateProjectDto("Other Project");
+            projectApi().create(nameMatchingDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(otherDto).then().statusCode(HttpStatus.CREATED.value());
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, query)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(3);
+            assertThat(response.getContent())
+                    .extracting(ReadProjectDto::name)
+                    .contains(defaultCreateDto.name(), nameMatchingDto.name(), otherDto.name());
         }
     }
 
@@ -214,10 +454,10 @@ public class ProjectControllerTest extends IntegrationTest {
                     .extract()
                     .as(ReadProjectDto.class);
 
-            assertThat(project.id().toString()).isEqualTo(projectId);
+            assertThat(project.id()).hasToString(projectId);
             assertThat(project.name()).isEqualTo(defaultCreateDto.name());
             assertThat(project.createdBy()).isNotNull();
-            assertThat(project.elementCount()).isEqualTo(0);
+            assertThat(project.elementCount()).isZero();
         }
 
         @Test
@@ -251,7 +491,7 @@ public class ProjectControllerTest extends IntegrationTest {
             assertThat(project.id()).isNotNull();
             assertThat(project.name()).isEqualTo("New Project");
             assertThat(project.createdBy()).isNotNull();
-            assertThat(project.elementCount()).isEqualTo(0);
+            assertThat(project.elementCount()).isZero();
         }
 
         @Test
@@ -336,7 +576,7 @@ public class ProjectControllerTest extends IntegrationTest {
                     .extract()
                     .as(ReadProjectDto.class);
 
-            assertThat(project.id().toString()).isEqualTo(projectId);
+            assertThat(project.id()).hasToString(projectId);
             assertThat(project.name()).isEqualTo("Updated Project Name");
         }
 
@@ -386,7 +626,7 @@ public class ProjectControllerTest extends IntegrationTest {
                     .extract()
                     .as(ReadProjectDto.class);
 
-            assertThat(project.id().toString()).isEqualTo(projectId);
+            assertThat(project.id()).hasToString(projectId);
         }
 
         @Test
@@ -546,7 +786,7 @@ public class ProjectControllerTest extends IntegrationTest {
                     .extract()
                     .as(ReadProjectDto.class);
 
-            assertThat(project.id().toString()).isEqualTo(projectToKeepId);
+            assertThat(project.id()).hasToString(projectToKeepId);
         }
     }
 }

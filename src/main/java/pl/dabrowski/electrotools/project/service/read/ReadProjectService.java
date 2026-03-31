@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.dabrowski.electrotools.project.Project;
 import pl.dabrowski.electrotools.project.repository.ProjectRepository;
+import pl.dabrowski.electrotools.utils.JooqUtils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -39,8 +40,11 @@ public class ReadProjectService {
     public Page<ReadProjectDto> pageAll(Pageable pageable,
                                         Optional<String> query) {
         Condition condition = query
-                .map(v -> T_PROJECTS.NAME.containsIgnoreCase(v)
-                        .or(T_PROJECTS.CREATED_BY.containsIgnoreCase(v)))
+                .map(v -> "%" + v + "%")
+                .map(v -> T_PROJECTS.NAME.likeIgnoreCase(v)
+                        .or(T_PROJECTS.CREATED_BY.likeIgnoreCase(v))
+                        .or(T_PROJECTS.MODIFIED_BY.likeIgnoreCase(v))
+                        .or(JooqUtils.format(T_PROJECTS.MODIFIED_DATE).likeIgnoreCase(v)))
                 .orElse(DSL.noCondition());
 
         var base = dslContext.with("base").as(

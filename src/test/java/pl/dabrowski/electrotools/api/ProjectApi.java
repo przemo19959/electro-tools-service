@@ -23,10 +23,19 @@ public class ProjectApi {
     }
 
     public Response pageAll(int page, int size) {
-        return given(spec)
+        return pageAll(page, size, null);
+    }
+
+    public Response pageAll(int page, int size, String query) {
+        var request = given(spec)
                 .queryParam("page", page)
-                .queryParam("size", size)
-                .get(ProjectController.BASE_URL + "/page");
+                .queryParam("size", size);
+
+        if (query != null) {
+            request.queryParam("query", query);
+        }
+
+        return request.get(ProjectController.BASE_URL + "/page");
     }
 
     public Response findById(String projectId) {
