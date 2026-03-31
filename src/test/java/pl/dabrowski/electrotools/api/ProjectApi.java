@@ -4,6 +4,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lombok.RequiredArgsConstructor;
+import pl.dabrowski.electrotools.filter.FilterGroupDto;
 import pl.dabrowski.electrotools.project.ProjectController;
 import pl.dabrowski.electrotools.project.service.create.CreateProjectDto;
 import pl.dabrowski.electrotools.project.service.update.UpdateProjectDto;
@@ -35,7 +36,10 @@ public class ProjectApi {
             request.queryParam("query", query);
         }
 
-        return request.get(ProjectController.BASE_URL + "/page");
+        return request
+                .contentType(ContentType.JSON)
+                .body(FilterGroupDto.empty())
+                .post(ProjectController.BASE_URL + "/page");
     }
 
     public Response findById(String projectId) {

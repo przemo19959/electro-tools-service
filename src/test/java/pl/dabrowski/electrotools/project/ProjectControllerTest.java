@@ -115,7 +115,7 @@ class ProjectControllerTest extends IntegrationTest {
                     });
 
             List<ReadProjectDto> content = response.getContent();
-            assertThat(content).isNotNull().isEmpty();
+            assertThat(content).isNotNull().hasSize(1);
 
             ReadProjectDto firstItem = content.getFirst();
             assertThat(firstItem.id()).isNotNull();

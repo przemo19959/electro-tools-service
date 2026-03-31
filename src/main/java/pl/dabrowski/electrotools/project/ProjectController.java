@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.dabrowski.electrotools.filter.FilterGroupDto;
 import pl.dabrowski.electrotools.project.service.create.CreateProjectDto;
 import pl.dabrowski.electrotools.project.service.create.CreateProjectService;
 import pl.dabrowski.electrotools.project.service.delete.DeleteProjectService;
@@ -37,11 +38,13 @@ public class ProjectController {
         return ResponseEntity.ok(readProjectService.findAll());
     }
 
-    @GetMapping("/page")
+    @PostMapping("/page")
 //  @PreAuthorize("hasAuthority('read_projects')")
     public ResponseEntity<Page<ReadProjectDto>> pageAll(@ParameterObject Pageable pageable,
-                                                        @RequestParam Optional<String> query) {
-        return ResponseEntity.ok(readProjectService.pageAll(pageable, query));
+                                                        @RequestParam Optional<String> query,
+                                                        @RequestBody FilterGroupDto filter
+    ) {
+        return ResponseEntity.ok(readProjectService.pageAll(pageable, query, filter));
     }
 
     @GetMapping("/{projectId}")

@@ -1,7 +1,6 @@
 package pl.dabrowski.electrotools.project.service.read;
 
 import lombok.RequiredArgsConstructor;
-import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.data.domain.Page;
@@ -10,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import pl.dabrowski.electrotools.filter.FilterGroupDto;
 import pl.dabrowski.electrotools.project.Project;
 import pl.dabrowski.electrotools.project.repository.ProjectRepository;
 import pl.dabrowski.electrotools.utils.JooqUtils;
@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static pl.dabrowski.electrotools.jooq.Tables.*;
+import static pl.dabrowski.electrotools.utils.JooqUtils.query;
 import static pl.dabrowski.electrotools.utils.JooqUtils.resolve;
 
 @Service
@@ -38,14 +39,13 @@ public class ReadProjectService {
     }
 
     public Page<ReadProjectDto> pageAll(Pageable pageable,
-                                        Optional<String> query) {
-        Condition condition = query
-                .map(v -> "%" + v + "%")
-                .map(v -> T_PROJECTS.NAME.likeIgnoreCase(v)
-                        .or(T_PROJECTS.CREATED_BY.likeIgnoreCase(v))
-                        .or(T_PROJECTS.MODIFIED_BY.likeIgnoreCase(v))
-                        .or(JooqUtils.format(T_PROJECTS.MODIFIED_DATE).likeIgnoreCase(v)))
-                .orElse(DSL.noCondition());
+                                        Optional<String> query,
+                                        FilterGroupDto filter
+    ) {
+        var conditions = Optional.ofNullable(filter).orElse(FilterGroupDto.empty()).process();
+        conditions = conditions.and(query
+                .map(v -> query(v, T_PROJECTS.NAME, T_PROJECTS.CREATED_BY, T_PROJECTS.MODIFIED_BY, JooqUtils.format(T_PROJECTS.MODIFIED_DATE)))
+                .orElse(DSL.noCondition()));
 
         var base = dslContext.with("base").as(
                 DSL.select(
@@ -72,7 +72,7 @@ public class ReadProjectService {
                                         .where(T_RCD_ELEMENTS.PROJECT_ID.eq(T_PROJECTS.ID)).asField().as("rcdCount")
                         )
                         .from(T_PROJECTS)
-                        .where(condition)
+                        .where(conditions)
                         .orderBy(T_PROJECTS.MODIFIED_DATE.desc())
         );
 
@@ -85,7 +85,7 @@ public class ReadProjectService {
         if (content.isEmpty()) {
             var totalCount = dslContext.select(DSL.count())
                     .from(T_PROJECTS)
-                    .where(condition)
+                    .where(conditions)
                     .fetchOne(0, Long.class);
             return new PageImpl<>(List.of(), pageable, Optional.ofNullable(totalCount).orElse(0L));
         }
