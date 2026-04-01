@@ -21,6 +21,30 @@ public record FilterGroupDto(
         return new FilterGroupDto(FilterGroupOperator.AND, new ArrayList<>(), new ArrayList<>());
     }
 
+    public static FilterGroupDto and(FilterColumnDto... columns) {
+        return and(List.of(columns), new ArrayList<>());
+    }
+
+    public static FilterGroupDto or(FilterColumnDto... columns) {
+        return or(List.of(columns), new ArrayList<>());
+    }
+
+    public static FilterGroupDto and(FilterGroupDto... groups) {
+        return and(new ArrayList<>(), List.of(groups));
+    }
+
+    public static FilterGroupDto or(FilterGroupDto... groups) {
+        return or(new ArrayList<>(), List.of(groups));
+    }
+
+    public static FilterGroupDto and(List<FilterColumnDto> columns, List<FilterGroupDto> groups) {
+        return new FilterGroupDto(FilterGroupOperator.AND, columns, groups);
+    }
+
+    public static FilterGroupDto or(List<FilterColumnDto> columns, List<FilterGroupDto> groups) {
+        return new FilterGroupDto(FilterGroupOperator.OR, columns, groups);
+    }
+
     public record FilterColumnDto(
             FilterableColumn column,
             FilterColumnOperator operator,

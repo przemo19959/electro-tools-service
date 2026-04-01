@@ -10,6 +10,7 @@ import pl.dabrowski.electrotools.project.service.create.CreateProjectDto;
 import pl.dabrowski.electrotools.project.service.update.UpdateProjectDto;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -28,6 +29,10 @@ public class ProjectApi {
     }
 
     public Response pageAll(int page, int size, String query) {
+        return pageAll(page, size, query, null);
+    }
+
+    public Response pageAll(int page, int size, String query, FilterGroupDto filter) {
         var request = given(spec)
                 .queryParam("page", page)
                 .queryParam("size", size);
@@ -38,7 +43,7 @@ public class ProjectApi {
 
         return request
                 .contentType(ContentType.JSON)
-                .body(FilterGroupDto.empty())
+                .body(Optional.ofNullable(filter).orElse(FilterGroupDto.empty()))
                 .post(ProjectController.BASE_URL + "/page");
     }
 

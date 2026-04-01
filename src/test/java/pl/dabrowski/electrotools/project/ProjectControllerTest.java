@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import pl.dabrowski.electrotools.IntegrationTest;
 import pl.dabrowski.electrotools.PageResponse;
+import pl.dabrowski.electrotools.filter.FilterGroupDto;
+import pl.dabrowski.electrotools.filter.column.ProjectFilterableColumn;
+import pl.dabrowski.electrotools.filter.operator.FilterColumnOperator;
 import pl.dabrowski.electrotools.project.repository.ProjectRepository;
 import pl.dabrowski.electrotools.project.service.create.CreateProjectDto;
 import pl.dabrowski.electrotools.project.service.read.ReadProjectDto;
@@ -437,6 +440,418 @@ class ProjectControllerTest extends IntegrationTest {
             assertThat(response.getContent())
                     .extracting(ReadProjectDto::name)
                     .contains(defaultCreateDto.name(), nameMatchingDto.name(), otherDto.name());
+        }
+
+        @Test
+        @DisplayName("Should return paginated projects when using filter variant with null filter")
+        void testPageAll_WithNullFilterObject() {
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, null)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(1);
+            assertThat(response.getContent())
+                    .singleElement()
+                    .satisfies(project -> assertThat(project.name()).isEqualTo(defaultCreateDto.name()));
+        }
+
+        @Test
+        @DisplayName("Should return paginated projects when using filter variant with empty filter")
+        void testPageAll_WithEmptyFilterObject() {
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, FilterGroupDto.empty())
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(1);
+            assertThat(response.getContent())
+                    .singleElement()
+                    .satisfies(project -> assertThat(project.name()).isEqualTo(defaultCreateDto.name()));
+        }
+
+        @Test
+        @DisplayName("Should return only projects matched by filter object")
+        void testPageAll_WithFilterObjectMatchingName() {
+            CreateProjectDto matchingDto = new CreateProjectDto("Filter Match Project");
+            CreateProjectDto otherDto = new CreateProjectDto("Filter Other Project");
+            projectApi().create(matchingDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(otherDto).then().statusCode(HttpStatus.CREATED.value());
+
+            FilterGroupDto filter = FilterGroupDto.and(
+                    ProjectFilterableColumn.NAME.create(
+                            FilterColumnOperator.STRING_EQ,
+                            matchingDto.name()
+                    )
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(1);
+            assertThat(response.getContent())
+                    .singleElement()
+                    .satisfies(project -> assertThat(project.name()).isEqualTo(matchingDto.name()));
+        }
+
+        @Test
+        @DisplayName("Should return projects matched by OR groups in filter object")
+        void testPageAll_WithFilterObjectOrGroups() {
+            CreateProjectDto firstDto = new CreateProjectDto("Filter OR First");
+            CreateProjectDto secondDto = new CreateProjectDto("Filter OR Second");
+            CreateProjectDto otherDto = new CreateProjectDto("Filter OR Other");
+            projectApi().create(firstDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(secondDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(otherDto).then().statusCode(HttpStatus.CREATED.value());
+
+            FilterGroupDto filter = FilterGroupDto.or(
+                    FilterGroupDto.and(
+                            ProjectFilterableColumn.NAME.create(
+                                    FilterColumnOperator.STRING_EQ,
+                                    firstDto.name()
+                            )
+                    ),
+                    FilterGroupDto.and(
+                            ProjectFilterableColumn.NAME.create(
+                                    FilterColumnOperator.STRING_EQ,
+                                    secondDto.name()
+                            )
+                    )
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(2);
+            assertThat(response.getContent())
+                    .extracting(ReadProjectDto::name)
+                    .containsExactlyInAnyOrder(firstDto.name(), secondDto.name());
+        }
+
+        @Test
+        @DisplayName("Should return intersection when both query and filter are provided")
+        void testPageAll_WithQueryAndFilterIntersection() {
+            CreateProjectDto matchingDto = new CreateProjectDto("Intersection Main Board");
+            CreateProjectDto queryOnlyDto = new CreateProjectDto("Intersection Main Garage");
+            CreateProjectDto filterOnlyDto = new CreateProjectDto("Intersection Aux Board");
+            projectApi().create(matchingDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(queryOnlyDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(filterOnlyDto).then().statusCode(HttpStatus.CREATED.value());
+
+            FilterGroupDto filter = FilterGroupDto.and(
+                    ProjectFilterableColumn.NAME.create(
+                            FilterColumnOperator.STRING_EQ,
+                            matchingDto.name()
+                    )
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, "main", filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(1);
+            assertThat(response.getContent())
+                    .singleElement()
+                    .satisfies(project -> assertThat(project.name()).isEqualTo(matchingDto.name()));
+        }
+
+        @Test
+        @DisplayName("Should return empty result when query and filter do not intersect")
+        void testPageAll_WithQueryAndFilterNoIntersection() {
+            CreateProjectDto dto = new CreateProjectDto("No Intersection Board");
+            projectApi().create(dto).then().statusCode(HttpStatus.CREATED.value());
+
+            FilterGroupDto filter = FilterGroupDto.and(
+                    ProjectFilterableColumn.NAME.create(
+                            FilterColumnOperator.STRING_EQ,
+                            dto.name()
+                    )
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, "definitely-no-match", filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isZero();
+            assertThat(response.getContent()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("Should return projects filtered by CREATED_BY with STRING_EQ")
+        void testPageAll_FilterByCreatedBy_StringEq() {
+            FilterGroupDto filter = FilterGroupDto.and(
+                    ProjectFilterableColumn.CREATED_BY.create(FilterColumnOperator.STRING_EQ, "system")
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(1);
+            assertThat(response.getContent())
+                    .extracting(ReadProjectDto::createdBy)
+                    .containsOnly("system");
+        }
+
+        @Test
+        @DisplayName("Should return empty when filtering by CREATED_BY with non-matching STRING_EQ")
+        void testPageAll_FilterByCreatedBy_StringEq_NoMatch() {
+            FilterGroupDto filter = FilterGroupDto.and(
+                    ProjectFilterableColumn.CREATED_BY.create(FilterColumnOperator.STRING_EQ, "unknown-user")
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isZero();
+            assertThat(response.getContent()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("Should return empty when filtering by CREATED_BY with STRING_NOT_EQ matching all")
+        void testPageAll_FilterByCreatedBy_StringNotEq() {
+            FilterGroupDto filter = FilterGroupDto.and(
+                    ProjectFilterableColumn.CREATED_BY.create(FilterColumnOperator.STRING_NOT_EQ, "system")
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isZero();
+            assertThat(response.getContent()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("Should return projects when filtering by CREATED_BY with STRING_IN")
+        void testPageAll_FilterByCreatedBy_StringIn() {
+            FilterGroupDto filter = FilterGroupDto.and(
+                    ProjectFilterableColumn.CREATED_BY.create(FilterColumnOperator.STRING_IN, "system,admin")
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(1);
+            assertThat(response.getContent())
+                    .extracting(ReadProjectDto::createdBy)
+                    .containsOnly("system");
+        }
+
+        @Test
+        @DisplayName("Should return projects filtered by MODIFIED_BY with STRING_EQ")
+        void testPageAll_FilterByModifiedBy_StringEq() {
+            CreateProjectDto extraDto = new CreateProjectDto("Modified By Test Project");
+            projectApi().create(extraDto).then().statusCode(HttpStatus.CREATED.value());
+
+            FilterGroupDto filter = FilterGroupDto.and(
+                    ProjectFilterableColumn.MODIFIED_BY.create(FilterColumnOperator.STRING_EQ, "system")
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(2);
+            assertThat(response.getContent())
+                    .extracting(ReadProjectDto::modifiedBy)
+                    .containsOnly("system");
+        }
+
+        @Test
+        @DisplayName("Should return projects modified after a date in the past")
+        void testPageAll_FilterByModifiedDate_DateAfter() {
+            String pastDate = "2000-01-01T00:00:00";
+            FilterGroupDto filter = FilterGroupDto.and(
+                    ProjectFilterableColumn.MODIFIED_DATE.create(FilterColumnOperator.DATE_AFTER, pastDate)
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(1);
+            assertThat(response.getContent())
+                    .extracting(ReadProjectDto::name)
+                    .containsOnly(defaultCreateDto.name());
+        }
+
+        @Test
+        @DisplayName("Should return empty when filtering by MODIFIED_DATE after a future date")
+        void testPageAll_FilterByModifiedDate_DateAfter_NoMatch() {
+            String futureDate = "2099-12-31T23:59:59";
+            FilterGroupDto filter = FilterGroupDto.and(
+                    ProjectFilterableColumn.MODIFIED_DATE.create(FilterColumnOperator.DATE_AFTER, futureDate)
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isZero();
+            assertThat(response.getContent()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("Should return projects modified before a future date")
+        void testPageAll_FilterByModifiedDate_DateBefore() {
+            String futureDate = "2099-12-31T23:59:59";
+            FilterGroupDto filter = FilterGroupDto.and(
+                    ProjectFilterableColumn.MODIFIED_DATE.create(FilterColumnOperator.DATE_BEFORE, futureDate)
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(1);
+            assertThat(response.getContent())
+                    .extracting(ReadProjectDto::name)
+                    .containsOnly(defaultCreateDto.name());
+        }
+
+        @Test
+        @DisplayName("Should filter by NAME and CREATED_BY combined with AND")
+        void testPageAll_FilterByNameAndCreatedBy_And() {
+            CreateProjectDto matchingDto = new CreateProjectDto("Combined Filter Project");
+            CreateProjectDto otherDto = new CreateProjectDto("Other Combined Project");
+            projectApi().create(matchingDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(otherDto).then().statusCode(HttpStatus.CREATED.value());
+
+            FilterGroupDto filter = FilterGroupDto.and(
+                    ProjectFilterableColumn.NAME.create(FilterColumnOperator.STRING_EQ, matchingDto.name()),
+                    ProjectFilterableColumn.CREATED_BY.create(FilterColumnOperator.STRING_EQ, "system")
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(1);
+            assertThat(response.getContent())
+                    .singleElement()
+                    .satisfies(p -> {
+                        assertThat(p.name()).isEqualTo(matchingDto.name());
+                        assertThat(p.createdBy()).isEqualTo("system");
+                    });
+        }
+
+        @Test
+        @DisplayName("Should filter by NAME OR MODIFIED_BY returning multiple results")
+        void testPageAll_FilterByNameOrModifiedBy_Or() {
+            CreateProjectDto firstDto = new CreateProjectDto("Or Filter Alpha");
+            CreateProjectDto secondDto = new CreateProjectDto("Or Filter Beta");
+            projectApi().create(firstDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(secondDto).then().statusCode(HttpStatus.CREATED.value());
+
+            FilterGroupDto filter = FilterGroupDto.or(
+                    FilterGroupDto.and(
+                            ProjectFilterableColumn.NAME.create(FilterColumnOperator.STRING_EQ, firstDto.name())
+                    ),
+                    FilterGroupDto.and(
+                            ProjectFilterableColumn.MODIFIED_BY.create(FilterColumnOperator.STRING_EQ, "system")
+                    )
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            // All 3 projects have modifiedBy=system, so OR returns all
+            assertThat(response.getTotalElements()).isEqualTo(3);
+        }
+
+        @Test
+        @DisplayName("Should filter by MODIFIED_DATE and NAME combined returning intersection")
+        void testPageAll_FilterByModifiedDateAndName_And() {
+            CreateProjectDto matchingDto = new CreateProjectDto("Date And Name Match");
+            CreateProjectDto otherDto = new CreateProjectDto("Date Only Match");
+            projectApi().create(matchingDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(otherDto).then().statusCode(HttpStatus.CREATED.value());
+
+            FilterGroupDto filter = FilterGroupDto.and(
+                    ProjectFilterableColumn.NAME.create(FilterColumnOperator.STRING_EQ, matchingDto.name()),
+                    ProjectFilterableColumn.MODIFIED_DATE.create(FilterColumnOperator.DATE_AFTER, "2000-01-01T00:00:00")
+            );
+
+            PageResponse<ReadProjectDto> response = projectApi()
+                    .pageAll(0, 10, null, filter)
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response.getTotalElements()).isEqualTo(1);
+            assertThat(response.getContent())
+                    .singleElement()
+                    .satisfies(p -> assertThat(p.name()).isEqualTo(matchingDto.name()));
         }
     }
 
