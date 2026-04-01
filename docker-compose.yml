@@ -10,15 +10,25 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
-  auth-service:
-    image: quay.io/keycloak/keycloak:26.5.0
-    environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: admin
-      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
-      KC_HOSTNAME: localhost
+  #  auth-service:
+  #    image: quay.io/keycloak/keycloak:26.5.0
+  #    environment:
+  #      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+  #      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+  #      KC_HOSTNAME: localhost
+  #    ports:
+  #      - "8081:8080"
+  #    command: ["start-dev"]
+
+  be-service:
+    depends_on:
+      - db
+    #      - auth-service
+    build: .
     ports:
-      - "8081:8080"
-    command: ["start-dev"]
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/electro-tools-db
 
 volumes:
     db_data:
