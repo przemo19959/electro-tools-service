@@ -12,6 +12,6 @@ public interface FilterableColumn {
     Field<?> getField();
 
     default FilterGroupDto.FilterColumnDto create(FilterColumnOperator operator, String value) {
-        return new FilterGroupDto.FilterColumnDto(this, operator, value);
+        return new FilterGroupDto.FilterColumnDto(name(), operator, value);
     }
 }
