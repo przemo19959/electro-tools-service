@@ -2,7 +2,7 @@ package pl.dabrowski.electrotools.filter;
 
 import org.jooq.Condition;
 import org.jooq.impl.DSL;
-import pl.dabrowski.electrotools.filter.column.ProjectFilterableColumn;
+import pl.dabrowski.electrotools.filter.column.FilterableColumnFactory;
 import pl.dabrowski.electrotools.filter.operator.DateColumnProcessor;
 import pl.dabrowski.electrotools.filter.operator.FilterColumnOperator;
 import pl.dabrowski.electrotools.filter.operator.NumberColumnProcessor;
@@ -53,7 +53,7 @@ public record FilterGroupDto(
         public Condition process() {
             // Must be like this, previously FilterableColumn was used directly in the DTO, but it caused StackOverflow in Swagger UI,
             // because of the circular reference between FilterableColumn and FilterGroupDto
-            var filterableColumn = ProjectFilterableColumn.valueOf(column);
+            var filterableColumn = FilterableColumnFactory.create(column);
             return switch (operator.getType()) {
                 case STRING -> new StringColumnProcessor(filterableColumn, operator, value).process();
                 case NUMBER -> new NumberColumnProcessor(filterableColumn, operator, value).process();

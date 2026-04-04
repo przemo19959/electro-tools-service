@@ -52,6 +52,12 @@ public class ProjectApi {
                 .get(ProjectController.BASE_URL + "/{projectId}", projectId);
     }
 
+    public Response findDistinctValues(String column) {
+        return given(spec)
+                .queryParam("column", column)
+                .get(ProjectController.BASE_URL + "/distinct-values");
+    }
+
     public Response create(CreateProjectDto body) {
         return given(spec)
                 .contentType(ContentType.JSON)

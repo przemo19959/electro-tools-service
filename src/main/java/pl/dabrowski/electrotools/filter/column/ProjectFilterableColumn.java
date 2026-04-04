@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jooq.Field;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import static pl.dabrowski.electrotools.jooq.tables.TProjects.T_PROJECTS;
 
 @RequiredArgsConstructor
@@ -17,4 +20,10 @@ public enum ProjectFilterableColumn implements FilterableColumn {
 
     private final Field<?> field;
     private final FilterableColumnType type;
+
+    public static Optional<? extends FilterableColumn> fromName(String column) {
+        return Arrays.stream(values())
+                .filter(v -> v.name().equals(column))
+                .findFirst();
+    }
 }

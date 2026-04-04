@@ -53,6 +53,11 @@ public class ProjectController {
         return ResponseEntity.ok(readProjectService.findById(projectId));
     }
 
+    @GetMapping("/distinct-values")
+    public ResponseEntity<List<String>> findDistinctValues(@RequestParam String column) {
+        return ResponseEntity.ok(readProjectService.findDistinctValues(column));
+    }
+
     @PostMapping
 //  @PreAuthorize("hasAuthority('edit_projects')")
     public ResponseEntity<ReadProjectDto> create(@Valid @RequestBody CreateProjectDto dto) {

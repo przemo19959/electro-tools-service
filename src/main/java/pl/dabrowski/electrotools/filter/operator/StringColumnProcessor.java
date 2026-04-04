@@ -17,6 +17,7 @@ public class StringColumnProcessor {
             case STRING_NOT_EQ -> field.ne(value);
             case STRING_IN -> field.in(value.split(","));
             case STRING_NOT_IN -> field.notIn(value.split(","));
+            case STRING_ILIKE -> field.likeIgnoreCase('%' + value + '%');
             default -> throw new IllegalArgumentException("Unsupported operator: " + operator);
         };
     }

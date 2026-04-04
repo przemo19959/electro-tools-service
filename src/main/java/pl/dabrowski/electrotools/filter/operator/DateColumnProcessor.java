@@ -28,6 +28,7 @@ public class DateColumnProcessor {
                     Stream.of(value.split(","))
                             .map(LocalDateTime::parse)
                             .toList());
+            case DATE_ILIKE -> field.likeIgnoreCase('%' + value + '%');
             default -> throw new IllegalArgumentException("Unsupported operator: " + operator);
         };
     }

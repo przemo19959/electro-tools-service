@@ -30,6 +30,7 @@ public class NumberColumnProcessor {
                     Stream.of(value.split(","))
                             .map(Double::valueOf)
                             .toList());
+            case NUMBER_ILIKE -> field.likeIgnoreCase('%' + value + '%');
             default -> throw new IllegalArgumentException("Unsupported operator: " + operator);
         };
     }

@@ -856,6 +856,156 @@ class ProjectControllerTest extends IntegrationTest {
     }
 
     @Nested
+    @DisplayName("findDistinctValues(String column)")
+    class FindDistinctValuesTests {
+
+        @Test
+        @DisplayName("Should return distinct values for NAME column")
+        void testFindDistinctValues_Name() {
+            CreateProjectDto firstDto = new CreateProjectDto("Distinct Name Alpha");
+            CreateProjectDto secondDto = new CreateProjectDto("Distinct Name Beta");
+            projectApi().create(firstDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(secondDto).then().statusCode(HttpStatus.CREATED.value());
+
+            List<String> response = projectApi()
+                    .findDistinctValues(ProjectFilterableColumn.NAME.name())
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response)
+                    .contains(defaultCreateDto.name(), firstDto.name(), secondDto.name())
+                    .doesNotHaveDuplicates();
+        }
+
+        @Test
+        @DisplayName("Should return single distinct value for CREATED_BY column")
+        void testFindDistinctValues_CreatedBy() {
+            CreateProjectDto firstDto = new CreateProjectDto("Created By Distinct One");
+            CreateProjectDto secondDto = new CreateProjectDto("Created By Distinct Two");
+            projectApi().create(firstDto).then().statusCode(HttpStatus.CREATED.value());
+            projectApi().create(secondDto).then().statusCode(HttpStatus.CREATED.value());
+
+            List<String> response = projectApi()
+                    .findDistinctValues(ProjectFilterableColumn.CREATED_BY.name())
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response).containsOnly("system");
+        }
+
+        @Test
+        @DisplayName("Should return single distinct value for MODIFIED_BY column")
+        void testFindDistinctValues_ModifiedBy() {
+            UpdateProjectDto updateDto = new UpdateProjectDto("Updated For ModifiedBy Distinct");
+            projectApi().update(projectId, updateDto).then().statusCode(HttpStatus.OK.value());
+
+            List<String> response = projectApi()
+                    .findDistinctValues(ProjectFilterableColumn.MODIFIED_BY.name())
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response).containsOnly("system");
+        }
+
+        @Test
+        @DisplayName("Should return non-empty distinct values for CREATED_DATE column")
+        void testFindDistinctValues_CreatedDate() {
+            List<String> response = projectApi()
+                    .findDistinctValues(ProjectFilterableColumn.CREATED_DATE.name())
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response).isNotEmpty().allSatisfy(value -> assertThat(value).isNotBlank());
+        }
+
+        @Test
+        @DisplayName("Should return non-empty distinct values for MODIFIED_DATE column")
+        void testFindDistinctValues_ModifiedDate() {
+            List<String> response = projectApi()
+                    .findDistinctValues(ProjectFilterableColumn.MODIFIED_DATE.name())
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response).isNotEmpty().allSatisfy(value -> assertThat(value).isNotBlank());
+        }
+
+        @Test
+        @DisplayName("Should return empty list when no projects exist")
+        void testFindDistinctValues_EmptyWhenNoProjects() {
+            List<UUID> allProjectIds = projectApi()
+                    .findAll()
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<List<ReadProjectDto>>() {
+                    })
+                    .stream()
+                    .map(ReadProjectDto::id)
+                    .toList();
+
+            projectApi().deleteAllById(allProjectIds).then().statusCode(HttpStatus.OK.value());
+
+            List<String> response = projectApi()
+                    .findDistinctValues(ProjectFilterableColumn.NAME.name())
+                    .then()
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(new TypeRef<>() {
+                    });
+
+            assertThat(response).isEmpty();
+        }
+
+        @Test
+        @DisplayName("Should return 400 for invalid column")
+        void testFindDistinctValues_InvalidColumn() {
+            String invalidColumn = "INVALID_COLUMN";
+
+            projectApi()
+                    .findDistinctValues(invalidColumn)
+                    .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value());
+        }
+
+        @Test
+        @DisplayName("Should return 400 for invalid lowercase column")
+        void testFindDistinctValues_LowercaseColumn() {
+            String lowercaseColumn = ProjectFilterableColumn.NAME.name().toLowerCase();
+
+            projectApi()
+                    .findDistinctValues(lowercaseColumn)
+                    .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value());
+        }
+
+        @Test
+        @DisplayName("Should return 400 for blank column")
+        void testFindDistinctValues_BlankColumn() {
+            String blankColumn = "";
+
+            projectApi()
+                    .findDistinctValues(blankColumn)
+                    .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value());
+        }
+    }
+
+    @Nested
     @DisplayName("findById(String projectId)")
     class FindByIdTests {
 

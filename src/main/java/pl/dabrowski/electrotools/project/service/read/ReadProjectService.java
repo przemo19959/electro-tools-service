@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.dabrowski.electrotools.filter.FilterGroupDto;
+import pl.dabrowski.electrotools.filter.column.ProjectFilterableColumn;
 import pl.dabrowski.electrotools.project.Project;
 import pl.dabrowski.electrotools.project.repository.ProjectRepository;
 import pl.dabrowski.electrotools.utils.JooqUtils;
@@ -122,5 +123,14 @@ public class ReadProjectService {
                 .findById(projectId)
                 .map(Project::toDto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No Project with id: " + projectId + ""));
+    }
+
+    public List<String> findDistinctValues(String column) {
+        var filterableColumn = ProjectFilterableColumn.fromName(column)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid column: " + column));
+
+        return dslContext.selectDistinct(filterableColumn.getField())
+                .from(T_PROJECTS)
+                .fetchInto(String.class);
     }
 }
