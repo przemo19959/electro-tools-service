@@ -5,6 +5,7 @@ import com.google.genai.types.FunctionResponse;
 import lombok.RequiredArgsConstructor;
 import pl.dabrowski.electrotools.ai.service.ToolExecutor;
 import pl.dabrowski.electrotools.project.service.read.ReadProjectService;
+import pl.dabrowski.electrotools.utils.GenAiUtils;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.Map;
@@ -17,16 +18,11 @@ public class FindByIdToolExecutor implements ToolExecutor {
 
     @Override
     public FunctionResponse execute(FunctionCall call) {
-        var args = call.args().get();
+        var args = call.args().orElseGet(Map::of);
         var id = (String) args.get("id");
+
         var project = readProjectService.findById(UUID.fromString(id));
 
-        return FunctionResponse.builder()
-                .name(call.name().get())
-                .response(Map.of(
-                        "result",
-                        objectMapper.writeValueAsString(project)
-                ))
-                .build();
+        return GenAiUtils.createSuccessResponse(call, objectMapper.writeValueAsString(project));
     }
 }

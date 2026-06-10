@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GenAiUtils {
@@ -41,6 +42,23 @@ public class GenAiUtils {
                                 .functionResponse(functionResponse)
                                 .build()
                 ))
+                .build();
+    }
+
+    public static FunctionResponse createErrorResponse(FunctionCall call, String errorMessage) {
+        return FunctionResponse.builder()
+                .name(call.name().orElseThrow())
+                .response(Map.of(
+                        "error",
+                        errorMessage
+                ))
+                .build();
+    }
+
+    public static FunctionResponse createSuccessResponse(FunctionCall call, String successMessage) {
+        return FunctionResponse.builder()
+                .name(call.name().orElseThrow())
+                .response(Map.of("result", successMessage))
                 .build();
     }
 }

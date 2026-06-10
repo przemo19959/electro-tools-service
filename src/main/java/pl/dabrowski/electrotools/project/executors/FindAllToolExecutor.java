@@ -5,9 +5,8 @@ import com.google.genai.types.FunctionResponse;
 import lombok.RequiredArgsConstructor;
 import pl.dabrowski.electrotools.ai.service.ToolExecutor;
 import pl.dabrowski.electrotools.project.service.read.ReadProjectService;
+import pl.dabrowski.electrotools.utils.GenAiUtils;
 import tools.jackson.databind.ObjectMapper;
-
-import java.util.Map;
 
 @RequiredArgsConstructor
 public class FindAllToolExecutor implements ToolExecutor {
@@ -18,12 +17,6 @@ public class FindAllToolExecutor implements ToolExecutor {
     public FunctionResponse execute(FunctionCall call) {
         var projects = readProjectService.findAll();
 
-        return FunctionResponse.builder()
-                .name(call.name().get())
-                .response(Map.of(
-                        "result",
-                        objectMapper.writeValueAsString(projects)
-                ))
-                .build();
+        return GenAiUtils.createSuccessResponse(call, objectMapper.writeValueAsString(projects));
     }
 }

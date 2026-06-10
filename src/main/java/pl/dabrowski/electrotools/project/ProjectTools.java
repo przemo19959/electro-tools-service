@@ -7,12 +7,18 @@ import pl.dabrowski.electrotools.filter.column.ProjectFilterableColumn;
 import pl.dabrowski.electrotools.filter.operator.FilterColumnOperator;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class ProjectTools {
     public static final FunctionDeclaration PROJECT_FIND_ALL_TOOL = FunctionDeclaration.builder()
             .name("findAll")
-            .description("Find all projects. Returns a list of projects without pagination. Use with caution for large datasets.")
+            .description("""
+                        Find all projects. Returns a list of projects without pagination. Use with caution for large datasets.
+                    
+                        Use this function whenever you need to know which projects already exist,
+                        verify uniqueness, or inspect project names before creating new projects.
+                    """)
             .build();
     public static final FunctionDeclaration PROJECT_PAGE_ALL_TOOL = FunctionDeclaration.builder()
             .name("pageAll")
@@ -79,8 +85,15 @@ public class ProjectTools {
             .name("findById")
             .description("Find project by id. Returns a single project matching the given id.")
             .parameters(Schema.builder()
-                    .type(Type.Known.STRING)
-                    .description("Project id as UUID string")
+                    .type(Type.Known.OBJECT)
+                    .properties(Map.of(
+                            "id",
+                            Schema.builder()
+                                    .type(Type.Known.STRING)
+                                    .description("Project id as UUID string")
+                                    .build()
+                    ))
+                    .required(List.of("id"))
                     .build())
             .build();
     public static final FunctionDeclaration PROJECT_FIND_DISTINCT_VALUES_TOOL = FunctionDeclaration.builder()
@@ -95,36 +108,70 @@ public class ProjectTools {
             .build();
     public static final FunctionDeclaration PROJECT_CREATE_TOOL = FunctionDeclaration.builder()
             .name("create")
-            .description("Create a new project")
-            .parameters(Schema.builder()
-                    .type(Type.Known.STRING)
-                    .description("Name of the project")
-                    .build())
-            .build();
-    public static final FunctionDeclaration PROJECT_UPDATE_TOOL = FunctionDeclaration.builder()
-            .name("update")
-            .description("Update an existing project")
+            .description("""
+                    Create a new project.
+                    
+                    Call this function once for each project that must be created.
+                    The function may be invoked multiple times in the same conversation.
+                    """)
             .parameters(Schema.builder()
                     .type(Type.Known.OBJECT)
                     .properties(Map.of(
                             "name",
                             Schema.builder()
                                     .type(Type.Known.STRING)
-                                    .description("Name of the project")
+                                    .description("Name of the project that will be created")
                                     .build()
-                    )).build())
+                    ))
+                    .required(List.of("name"))
+                    .build())
+            .build();
+    public static final FunctionDeclaration PROJECT_UPDATE_TOOL = FunctionDeclaration.builder()
+            .name("update")
+            .description("""
+                        Update an existing project.
+                    
+                        Call this function once for each project that must be updated.
+                        The function may be invoked multiple times in the same conversation.
+                        Used to rename a project. Currently only name can be updated, but in the future more fields can be added.
+                    """)
+            .parameters(Schema.builder()
+                    .type(Type.Known.OBJECT)
+                    .properties(Map.of(
+                            "id",
+                            Schema.builder()
+                                    .type(Type.Known.STRING)
+                                    .description("Project id as UUID string. It determines which project will be updated")
+                                    .build(),
+                            "name",
+                            Schema.builder()
+                                    .type(Type.Known.STRING)
+                                    .description("New name of the project. It determines how the project will be updated")
+                                    .build()
+                    ))
+                    .required(List.of("id", "name"))
+                    .build())
             .build();
     public static final FunctionDeclaration PROJECT_DELETE_ALL_BY_ID_TOOL = FunctionDeclaration.builder()
             .name("deleteAllById")
-            .description("Delete projects by a list of ids")
+            .description("""
+                    Delete projects by a list of ids.
+                    Use this function to delete one or more projects.
+                    Function handles multiple ids, so it should be used once whenever possible.
+                    """)
             .parameters(Schema.builder()
-                    .type(Type.Known.ARRAY)
-                    .items(Schema.builder()
-                            .type(Type.Known.STRING)
-                            .format("uuid")
-                            .description("Project id as UUID string")
-                            .build())
-                    .description("List of project ids to delete")
+                    .type(Type.Known.OBJECT)
+                    .properties(Map.of(
+                            "ids",
+                            Schema.builder()
+                                    .type(Type.Known.ARRAY)
+                                    .items(Schema.builder()
+                                            .type(Type.Known.STRING)
+                                            .description("Project id as UUID string")
+                                            .build())
+                                    .build()
+                    ))
+                    .required(List.of("ids"))
                     .build())
             .build();
 }
