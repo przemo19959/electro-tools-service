@@ -22,7 +22,8 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class AiService {
-    private final static String MODEL = "gemini-2.5-flash";
+    private static final String MODEL = "gemini-2.5-flash";
+    private static final int MAX_TOOL_ROUNDS = 10;
     private final GenerateContentConfig config = GenerateContentConfig.builder()
             .tools(Tool.builder()
                     .functionDeclarations(List.of(
@@ -60,7 +61,7 @@ public class AiService {
         List<Content> contents = new ArrayList<>();
         contents.add(GenAiUtils.createPromptContent(prompt));
 
-        while (true) {
+        for (int i = 0; i < MAX_TOOL_ROUNDS; i++) {
             GenerateContentResponse response = client.models.generateContent(MODEL, contents, config);
 
             var call = response.functionCalls();
@@ -69,11 +70,15 @@ public class AiService {
                 return response.text();
             }
 
-            var functionCall = call.getFirst();
-            System.out.println(functionCall.name() + " with args:" + functionCall.args());
-            FunctionResponse responsePart = toolExecutors.get(functionCall.name().orElseThrow()).execute(functionCall);
-            contents.add(GenAiUtils.createModelFunctionCallContent(functionCall));
-            contents.add(GenAiUtils.createResponseContent(responsePart));
+            for (int j = 0; j < call.size(); j++) {
+                FunctionCall functionCall = call.get(j);
+
+                System.out.printf("Round: %d - %s with args:%s%n", i + 1, functionCall.name(), functionCall.args());
+                FunctionResponse responsePart = toolExecutors.get(functionCall.name().orElseThrow()).execute(functionCall);
+                contents.add(GenAiUtils.createModelFunctionCallContent(functionCall));
+                contents.add(GenAiUtils.createResponseContent(responsePart));
+            }
         }
+        throw new IllegalStateException("Max tool rounds reached");
     }
 }
