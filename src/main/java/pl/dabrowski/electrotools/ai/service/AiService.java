@@ -5,6 +5,7 @@ import com.google.genai.types.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.dabrowski.electrotools.ai.event.*;
 import pl.dabrowski.electrotools.project.ProjectTools;
 import pl.dabrowski.electrotools.project.executors.*;
 import pl.dabrowski.electrotools.project.service.create.CreateProjectService;
@@ -12,6 +13,9 @@ import pl.dabrowski.electrotools.project.service.delete.DeleteProjectService;
 import pl.dabrowski.electrotools.project.service.read.ReadProjectService;
 import pl.dabrowski.electrotools.project.service.update.UpdateProjectService;
 import pl.dabrowski.electrotools.utils.GenAiUtils;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
@@ -73,12 +77,66 @@ public class AiService {
             for (int j = 0; j < call.size(); j++) {
                 FunctionCall functionCall = call.get(j);
 
-                System.out.printf("Round: %d - %s with args:%s%n", i + 1, functionCall.name(), functionCall.args());
                 FunctionResponse responsePart = toolExecutors.get(functionCall.name().orElseThrow()).execute(functionCall);
                 contents.add(GenAiUtils.createModelFunctionCallContent(functionCall));
                 contents.add(GenAiUtils.createResponseContent(responsePart));
             }
         }
         throw new IllegalStateException("Max tool rounds reached");
+    }
+
+    public Flux<AgentEvent> handleStream(String prompt) {
+        List<Content> contents = new ArrayList<>();
+        contents.add(GenAiUtils.createPromptContent(prompt));
+
+        return runRound(new AgentState(contents, 0));
+    }
+
+    private Flux<AgentEvent> runRound(AgentState state) {
+        if (state.round() >= MAX_TOOL_ROUNDS) {
+            return Flux.just(new ErrorEvent("Max tool rounds reached"));
+        }
+
+        return generate(state.contents())
+                .flatMapMany(response -> {
+                    var calls = response.functionCalls();
+                    if (calls == null || calls.isEmpty()) {
+                        return Flux.just(new TokenEvent(response.text()));
+                    }
+
+                    return Flux.fromIterable(calls)
+                            .concatMap(call -> {
+                                String name = call.name().orElseThrow();
+                                AgentEvent toolCall = new ToolCallEvent(name, call.args());
+
+                                long start = System.currentTimeMillis();
+
+                                return executeTool(call)
+                                        .flatMapMany(toolResponse -> {
+                                            state.contents().add(GenAiUtils.createModelFunctionCallContent(call));
+                                            state.contents().add(GenAiUtils.createResponseContent(toolResponse));
+
+                                            AgentEvent toolResult = new ToolResultEvent(
+                                                    name,
+                                                    (System.currentTimeMillis() - start) / 1000f,
+                                                    toolResponse.response());
+
+                                            return Flux.just(toolCall, toolResult);
+                                        });
+                            })
+                            .concatWith(Flux.defer(() -> runRound(new AgentState(state.contents(), state.round() + 1))));
+                });
+    }
+
+    private Mono<GenerateContentResponse> generate(List<Content> contents) {
+        return Mono.fromCallable(() ->
+                        client.models.generateContent(MODEL, contents, config))
+                .subscribeOn(Schedulers.boundedElastic());
+    }
+
+    private Mono<FunctionResponse> executeTool(FunctionCall call) {
+        return Mono.fromCallable(() ->
+                        toolExecutors.get(call.name().orElseThrow()).execute(call))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 }
